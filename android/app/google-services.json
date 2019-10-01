@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "322225292682",
+    "firebase_url": "https://quantocusta-624ab.firebaseio.com",
+    "project_id": "quantocusta-624ab",
+    "storage_bucket": "quantocusta-624ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322225292682:android:7370f8c74a9743ac723473",
+        "android_client_info": {
+          "package_name": "com.example.quantocusta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322225292682-6lc69vdcc9tt79se4g32jq0todjlmhca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8dy765Peg5fW47WymVtp14H8yRSA6Irs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322225292682-6lc69vdcc9tt79se4g32jq0todjlmhca.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
