@@ -1,0 +1,3 @@
+enum Dificulty {FACIL, MEDIO, DIFICIL}
+
+enum Status {AGUARDANDO, INICIADO, FINALIZADO}
