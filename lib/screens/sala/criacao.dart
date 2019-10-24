@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/components/input_text.dart';
+import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/enums.dart';
+import 'package:quantocusta/screens/sala/jogo.dart';
 
 class SalaCriacao extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class SalaCriacao extends StatefulWidget {
 class _SalaCriacaoState extends State<SalaCriacao> {
   final db = Firestore.instance;
   final TextEditingController _controllerTeacher = TextEditingController();
+
   //final TextEditingController _controllerDificulty = TextEditingController();
   Dificulty valueDificulty = Dificulty.FACIL;
   final TextEditingController _controllerTime = TextEditingController();
@@ -30,10 +33,53 @@ class _SalaCriacaoState extends State<SalaCriacao> {
     }).then((docu))
   }*/
 
-  int generateRandom(){
+  int generateRandom() {
     var _random = Random();
     int min = 0, max = 99999;
     return min + _random.nextInt(max - min);
+  }
+
+  String showDificulty(Dificulty dificulty) {
+    switch (dificulty){
+      case Dificulty.DIFICIL:
+        return 'Difícil';
+      case Dificulty.FACIL:
+        return 'Fácil';
+      default:
+        return 'Médio';
+    }
+  }
+
+  IconData showIconDificulty(Dificulty dificulty) {
+    switch (dificulty){
+      case Dificulty.DIFICIL:
+        return Icons.looks_3;
+      case Dificulty.FACIL:
+        return Icons.looks_one;
+      default:
+        return Icons.looks_two;
+    }
+  }
+
+  Future<DocumentReference> createClassroom(BuildContext context) async{
+    DocumentReference ref = await db.collection("salas").add({
+      'idSala': generateRandom(),
+      'dificuldade': valueDificulty.toString(),
+      'duracao': int.tryParse(
+          _controllerTime.value.text.toString()),
+      'nomeProfessor':
+      _controllerTeacher.value.text.toString(),
+      'status': Status.AGUARDANDO.toString(),
+      'qntJogadores': int.tryParse(
+          _controllerPlayersAmount.value.text.toString()),
+    });
+
+    ref.collection("alunos").add({
+      'nome':'newcollection',
+      'pontuacao':'999'
+    });
+
+    return ref;
   }
 
   @override
@@ -54,13 +100,6 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                   labelText: 'Professor',
                   controller: _controllerTeacher,
                 ),
-                /*InputText(
-                  icon: Icons.swap_vert,
-                  hint: 'Insira o nível de dificuldade',
-                  labelText: 'Dificuldade',
-                  controller: _controllerDificulty,
-                ),*/
-
                 InputText(
                   icon: Icons.people,
                   hint: 'Insira a quantidade máxima de jogadores',
@@ -75,50 +114,32 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                   controller: _controllerTime,
                   keyboardType: TextInputType.number,
                 ),
-                /*TextField(
-                  controller: _controllerDificuldade,
-                  decoration: InputDecoration(
-                    labelText: 'Dificuldade',
-                    hintText: 'Fácil, Médio, Difícil',
-                    contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  controller: _controllerDuracao,
-                  decoration: InputDecoration(
-                    labelText: 'Duração',
-                    hintText: '(min)',
-                    contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  controller: _controllerQntJogadores,
-                  decoration: InputDecoration(
-                    labelText: 'Quantidade de jogadores',
-                    hintText: 'Até 100 jogadores',
-                    contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
-                  ),
-                ),*/
-                DropdownButton<Dificulty>(
-                  value: valueDificulty,
-                  onChanged: (Dificulty newValue) {
-                    setState(() {
-                      valueDificulty = newValue;
-                    });
-                  },
-                  items: Dificulty.values.map((Dificulty dificulty) {
-                    return DropdownMenuItem<Dificulty>(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<Dificulty>(
+                    value: valueDificulty,
+                    isExpanded: true,
+                    onChanged: (Dificulty newValue) {
+                      setState(() {
+                        valueDificulty = newValue;
+                      });
+                    },
+                    items: Dificulty.values.map((Dificulty dificulty) {
+                      return DropdownMenuItem<Dificulty>(
                         value: dificulty,
-                        child: Text(dificulty.toString()));
-                  }).toList(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Icon(showIconDificulty(dificulty),color: Colors.grey,),
+                            SizedBox(width: 10),
+                            Text(
+                              showDificulty(dificulty),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -133,17 +154,11 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                       style: TextStyle(fontSize: 20),
                     ),
                     padding: EdgeInsets.all(12),
-                    onPressed: () {
-                      db.collection("salas").document().setData(
-                        {
-                          'idSala': generateRandom(),
-                          'dificuldade': valueDificulty.toString(),
-                          'duracao': int.tryParse(_controllerTime.value.text.toString()),
-                          'nomeProfessor': _controllerTeacher.value.text.toString(),
-                          'status': Status.AGUARDANDO.toString(),
-                          'qntJogadores': int.tryParse(_controllerPlayersAmount.value.text.toString()),
-                        },
-                      );
+                    onPressed: () async {
+                      DocumentReference docRef = await createClassroom(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return SalaJogoProfessor(docRef);
+                      }));
                     },
                   ),
                 ),

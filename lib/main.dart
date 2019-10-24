@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
+import 'package:quantocusta/screens/login.dart';
 import 'package:quantocusta/screens/sala/criacao.dart';
 
 void main() => runApp(QuantoCusta());
