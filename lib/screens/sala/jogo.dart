@@ -2,18 +2,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/model/classroom.dart';
+import 'package:quantocusta/model/student.dart';
 
 class SalaJogoProfessor extends StatefulWidget {
   @override
   _SalaJogoProfessorState createState() => _SalaJogoProfessorState();
 
-  final Classroom _docRef;
+  final Classroom _classroom;
 
-  SalaJogoProfessor(this._docRef);
+  SalaJogoProfessor(this._classroom);
 
 }
 
 class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
+
+  final db = Firestore.instance;
 
   String fieldDocument(DocumentReference documentReference, String field) {
     var data;
@@ -29,6 +32,34 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
     return data;
   }
 
+  /*Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final record = Aluno.fromDocument(data);
+
+    return Padding(
+      key: ValueKey(record.nome),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: ListTile(
+          title: Text(record.nome),
+          trailing: Text(record.pontuacao.toString()),
+          onTap: () => print(record),
+        ),
+      ),
+    );
+  }*/
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,12 +72,24 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
         child: Column(
           children: <Widget>[
             Text(
-              fieldDocument(null, 'dificuldade').toString()
+              widget._classroom.idSala.toString()
             ),
-            Text(
-              fieldDocument(null, 'professor').toString()
-            ),
-
+            StreamBuilder<QuerySnapshot>(
+              stream: db.collection("salas").document(widget._classroom.documentId).collection("alunos").snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return Text('Loading...');
+                
+//                return _buildList(context, snapshot.data.documents);
+                return ListView(
+                  children: snapshot.data.documents.map((DocumentSnapshot document) {
+                    return ListTile(
+                      title: Text(document['nome']),
+                      subtitle: Text(document['pontuacao'].toString()),
+                    );
+                  }).toList(),
+                );
+              },
+            )
           ],
         ),
       ),

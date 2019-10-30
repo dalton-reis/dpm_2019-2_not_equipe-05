@@ -151,9 +151,9 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                     onPressed: () {
                       createClassroom(context).then((documentReference) {
                         documentReference.get().then((documentSnapshot) {
-                          //Classroom c = new Classroom(documentSnapshot.data['idSala'], _nomeProfessor, _duracao, _qntJogadores, _dificuldade, _status)
+                          Classroom classroom = new Classroom.fromDocument(documentSnapshot);
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return SalaJogoProfessor(null);
+                            return SalaJogoProfessor(classroom);
                           }));
                         });
                       });
