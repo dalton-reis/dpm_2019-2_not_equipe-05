@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
+import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/screens/sala/criacao.dart';
+import 'package:quantocusta/screens/sala/criacao_aluno.dart';
 
 class LoginComPin extends StatefulWidget {
   @override
@@ -14,6 +17,8 @@ class _LoginComPinState extends State<LoginComPin> {
 
   bool hasError = false;
   String errorMessage;
+
+  final db = Firestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +87,22 @@ class _LoginComPinState extends State<LoginComPin> {
                       onPressed: () {
                         setState(() {
                           numeroSala = int.tryParse(controller.text);
-                          if (numeroSala == 11111) {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                                  return SalaCriacao();
-                                }));
-                          } else {
-                            controller.text = null;
-                            hasError = true;
-                          }
+                          db.collection("salas").limit(1).where("idSala", isEqualTo: numeroSala)
+                          .getDocuments().then((documents) {
+
+                            if (documents == null || documents.documents == null || documents.documents.isEmpty) {
+                              controller.text = null;
+                              hasError = true;
+                            } else {
+                              DocumentSnapshot document = documents.documents.elementAt(0);
+                              Classroom classroom = new Classroom.fromDocument(document);
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                    return SalaCriacaoAluno(classroom);
+                                  }));
+                            }
+
+                          });
                         });
                       },
                     ),
@@ -99,7 +111,12 @@ class _LoginComPinState extends State<LoginComPin> {
                       child: Text('Criar uma sala',
                           style:
                           TextStyle(color: Colors.black45, fontSize: 18)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                              return SalaCriacao();
+                            }));
+                      },
                     )
                   ],
                 ),

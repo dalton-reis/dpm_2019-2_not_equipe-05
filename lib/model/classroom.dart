@@ -1,18 +1,34 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quantocusta/model/enums.dart';
 
 class Classroom {
-  final int _idSala;
-  final String _nomeProfessor;
-  final int _duracao;
-  final int _qntJogadores;
-  final Dificulty _dificuldade;
-  final Status _status;
+  String _documentId;
+  int _idSala;
+  String _nomeProfessor;
+  int _duracao;
+  int _qntJogadores;
+  Dificulty _dificuldade;
+  Status _status;
 
-  Classroom(this._idSala, this._nomeProfessor, this._duracao,
+  Classroom(this._documentId, this._idSala, this._nomeProfessor, this._duracao,
       this._qntJogadores, this._dificuldade, this._status);
 
+  Classroom.fromDocument(DocumentSnapshot documentSnapshot) {
+    Dificulty dif = Dificulty.values.firstWhere((o) => o.toString() == documentSnapshot.data['dificuldade']);
+    Status status = Status.values.firstWhere((o) => o.toString() == documentSnapshot.data['status']);
+    this._documentId = documentSnapshot.documentID;
+    this._idSala = documentSnapshot.data['idSala'];
+    this._nomeProfessor = documentSnapshot.data['nomeProfessor'];
+    this._duracao = documentSnapshot.data['duracao'];
+    this._qntJogadores = documentSnapshot.data['qntJogadores'];
+    this._dificuldade = dif;
+    this._status = status;
+  }
+
   Status get status => _status;
+
+  String get documentId => _documentId;
 
   Dificulty get dificuldade => _dificuldade;
 

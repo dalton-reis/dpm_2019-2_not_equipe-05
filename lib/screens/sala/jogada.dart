@@ -3,34 +3,32 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/dinheiro.dart';
 import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/model/produto.dart';
-import 'dart:developer' as developer;
+import 'package:quantocusta/model/student.dart';
 
 class JogadaState extends StatefulWidget {
   @override
-  _JogadaState createState() => _JogadaState();
+  _JogadaState createState() => _JogadaState(this.aluno);
+
+  Aluno aluno;
+
+  JogadaState(this.aluno);
 }
 
 class _JogadaState extends State<JogadaState> {
   final db = Firestore.instance;
-  final TextEditingController _controllerTeacher = TextEditingController();
 
-  //final TextEditingController _controllerDificulty = TextEditingController();
-  Dificulty valueDificulty = Dificulty.FACIL;
-  final TextEditingController _controllerTime = TextEditingController();
-  final TextEditingController _controllerPlayersAmount =
-      TextEditingController();
-  List _dificuldade = ['Básico', 'Fácil', 'Normal', 'Difícil', 'Avançado'];
-  List<DropdownMenuItem<String>> dificuldade = new List();
+  Aluno aluno;
+
+  _JogadaState(this.aluno);
+
   int _quantidadeJogadas = 1;
   List<Produto> produtos;
   List<Produto> produtosUtilizados = [];
   Future<List<Dinheiro>> dinheiros;
   List<Dinheiro> dinheirosSelecionados = [];
-
   num totalSelecionado = 0;
   Produto produtoAtual;
 
@@ -52,12 +50,6 @@ class _JogadaState extends State<JogadaState> {
     return dinheiros.documents
         .map((document) => new Dinheiro.from(document))
         .toList();
-  }
-
-  int generateRandom() {
-    var _random = Random();
-    int min = 0, max = 99999;
-    return min + _random.nextInt(max - min);
   }
 
   @override
@@ -157,8 +149,7 @@ class _JogadaState extends State<JogadaState> {
       this.totalSelecionado = totalFinal;
     });
     this.dinheirosSelecionados.add(dinheiro);
-    if (this.produtoAtual != null &&
-        this.produtoAtual.valor == totalFinal) {
+    if (this.produtoAtual != null && this.produtoAtual.valor == totalFinal) {
       final snackBar = SnackBar(
           content: Text('Acertou mizeravi!'),
           elevation: 40,

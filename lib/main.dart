@@ -25,7 +25,7 @@ class QuantoCusta extends StatelessWidget {
             buttonColor: Colors.lightBlueAccent,
             textTheme: ButtonTextTheme.accent,
           )),
-      home: JogadaState(),
+      home: LoginComPin(),
 
     );
   }
