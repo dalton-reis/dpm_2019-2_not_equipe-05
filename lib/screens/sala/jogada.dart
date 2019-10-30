@@ -149,7 +149,7 @@ class _JogadaState extends State<JogadaState> {
       this.totalSelecionado = totalFinal;
     });
     this.dinheirosSelecionados.add(dinheiro);
-    if (this.produtoAtual != null && this.produtoAtual.valor == totalFinal) {
+    if (this.produtoAtual != null && this.produtoAtual.valor.toStringAsFixed(2) == totalFinal.toStringAsFixed(2)) {
       final snackBar = SnackBar(
           content: Text('Acertou mizeravi!'),
           elevation: 40,
@@ -170,9 +170,9 @@ class _JogadaState extends State<JogadaState> {
       num index =
           produtos.length == 1 ? 0 : random.nextInt(this.produtos.length - 1);
       setState(() {
-        produtoAtual = this.produtos.elementAt(index);
-        totalSelecionado = 0;
-        _quantidadeJogadas += 1;
+        this.produtoAtual = this.produtos.elementAt(index);
+        this.totalSelecionado = 0;
+        this._quantidadeJogadas += 1;
       });
     }
   }
