@@ -61,8 +61,8 @@ class _SalaCriacaoState extends State<SalaCriacao> {
     }
   }
 
-  Future<DocumentReference> createClassroom(BuildContext context) async{
-    DocumentReference ref = await db.collection("salas").add({
+  Future<DocumentReference> createClassroom(BuildContext context) {
+    return db.collection("salas").add({
       'idSala': generateRandom(),
       'dificuldade': valueDificulty.toString(),
       'duracao': int.tryParse(
@@ -74,12 +74,6 @@ class _SalaCriacaoState extends State<SalaCriacao> {
           _controllerPlayersAmount.value.text.toString()),
     });
 
-    ref.collection("alunos").add({
-      'nome':'newcollection',
-      'pontuacao':'999'
-    });
-
-    return ref;
   }
 
   @override
@@ -154,11 +148,15 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                       style: TextStyle(fontSize: 20),
                     ),
                     padding: EdgeInsets.all(12),
-                    onPressed: () async {
-                      DocumentReference docRef = await createClassroom(context);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return SalaJogoProfessor(docRef);
-                      }));
+                    onPressed: () {
+                      createClassroom(context).then((documentReference) {
+                        documentReference.get().then((documentSnapshot) {
+                          //Classroom c = new Classroom(documentSnapshot.data['idSala'], _nomeProfessor, _duracao, _qntJogadores, _dificuldade, _status)
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return SalaJogoProfessor(null);
+                          }));
+                        });
+                      });
                     },
                   ),
                 ),

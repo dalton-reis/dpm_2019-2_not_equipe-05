@@ -1,13 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 import 'package:quantocusta/screens/login.dart';
 import 'package:quantocusta/screens/sala/criacao.dart';
+import 'package:quantocusta/screens/sala/jogo.dart';
 
 void main() => runApp(QuantoCusta());
 
 class QuantoCusta extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+
+    var document = Firestore.instance.collection('salas').document('aF1MzIcY24XYAsm87q9I');
+    debugPrint('porra'+document.toString());
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -17,7 +24,7 @@ class QuantoCusta extends StatelessWidget {
             buttonColor: Colors.lightBlueAccent,
             textTheme: ButtonTextTheme.accent,
           )),
-      home: SalaCriacao(),
+      home: SalaJogoProfessor(null),
     );
   }
 }

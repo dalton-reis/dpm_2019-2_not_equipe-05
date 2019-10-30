@@ -7,13 +7,28 @@ class SalaJogoProfessor extends StatefulWidget {
   @override
   _SalaJogoProfessorState createState() => _SalaJogoProfessorState();
 
-  final DocumentReference _docRef;
+  final Classroom _docRef;
 
   SalaJogoProfessor(this._docRef);
 
 }
 
 class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
+
+  String fieldDocument(DocumentReference documentReference, String field) {
+    var data;
+//    documentReference.get().then((datasnapshot){
+//      if(datasnapshot.exists){
+//        data = datasnapshot.data['dificuldade'];
+//      }
+//    });
+
+    documentReference.get().then((retorno) {
+      data = retorno.data['idSala'];
+    });
+    return data;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,8 +41,12 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
         child: Column(
           children: <Widget>[
             Text(
-              widget._docRef.toString(),
-            )
+              fieldDocument(null, 'dificuldade').toString()
+            ),
+            Text(
+              fieldDocument(null, 'professor').toString()
+            ),
+
           ],
         ),
       ),
