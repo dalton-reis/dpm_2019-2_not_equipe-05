@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/dinheiro.dart';
 import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/model/produto.dart';
@@ -10,19 +11,21 @@ import 'package:quantocusta/model/student.dart';
 
 class JogadaState extends StatefulWidget {
   @override
-  _JogadaState createState() => _JogadaState(this.aluno);
+  _JogadaState createState() => _JogadaState(this.aluno, this.sala);
 
   Aluno aluno;
+  Classroom sala;
 
-  JogadaState(this.aluno);
+  JogadaState(this.aluno, this.sala);
 }
 
 class _JogadaState extends State<JogadaState> {
   final db = Firestore.instance;
 
   Aluno aluno;
+  Classroom sala;
 
-  _JogadaState(this.aluno);
+  _JogadaState(this.aluno, this.sala);
 
   int _quantidadeJogadas = 1;
   List<Produto> produtos;
@@ -149,13 +152,23 @@ class _JogadaState extends State<JogadaState> {
       this.totalSelecionado = totalFinal;
     });
     this.dinheirosSelecionados.add(dinheiro);
-    if (this.produtoAtual != null && this.produtoAtual.valor.toStringAsFixed(2) == totalFinal.toStringAsFixed(2)) {
+    if (this.produtoAtual != null &&
+        this.produtoAtual.valor.toStringAsFixed(2) ==
+            totalFinal.toStringAsFixed(2)) {
       final snackBar = SnackBar(
           content: Text('Acertou mizeravi!'),
           elevation: 40,
           duration: Duration(seconds: 5));
       Scaffold.of(context).showSnackBar(snackBar);
+      this.aluno.pontuacao += 1;
 
+      Map<String, dynamic> data = {'pontuacao': this.aluno.pontuacao};
+      db
+          .collection("salas")
+          .document(this.sala.documentId)
+          .collection("alunos")
+          .document(aluno.documentID)
+          .updateData(data);
       new Timer(Duration(seconds: 3), () {
         this.realizarNovaJogada();
       });

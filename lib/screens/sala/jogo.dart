@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/model/classroom.dart';
@@ -11,11 +10,9 @@ class SalaJogoProfessor extends StatefulWidget {
   final Classroom _classroom;
 
   SalaJogoProfessor(this._classroom);
-
 }
 
 class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
-
   final db = Firestore.instance;
 
   String fieldDocument(DocumentReference documentReference, String field) {
@@ -59,35 +56,44 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
     );
   }*/
 
-
   @override
   Widget build(BuildContext context) {
+    db
+        .collection("salas")
+        .document(widget._classroom.documentId)
+        .collection("alunos")
+        .snapshots()
+        .listen((query) {
+      debugPrint(query.documents.toString());
+    });
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Sala'
-        ),
+        title: Text('Sala'),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            Text(
-              widget._classroom.idSala.toString()
-            ),
+            Text(widget._classroom.idSala.toString()),
             StreamBuilder<QuerySnapshot>(
-              stream: db.collection("salas").document(widget._classroom.documentId).collection("alunos").snapshots(),
+              stream: db
+                  .collection("salas")
+                  .document(widget._classroom.documentId)
+                  .collection("alunos")
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return Text('Loading...');
-                
+
 //                return _buildList(context, snapshot.data.documents);
-                return ListView(
-                  children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return Flexible(
+                    child: new ListView(
+                  children:
+                      snapshot.data.documents.map((DocumentSnapshot document) {
                     return ListTile(
                       title: Text(document['nome']),
                       subtitle: Text(document['pontuacao'].toString()),
                     );
                   }).toList(),
-                );
+                ));
               },
             )
           ],
