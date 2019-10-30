@@ -160,7 +160,7 @@ class _JogadaState extends State<JogadaState> {
           elevation: 40,
           duration: Duration(seconds: 5));
       Scaffold.of(context).showSnackBar(snackBar);
-      this.aluno.pontuacao += 1;
+      this.aluno.pontuacao = this.aluno.pontuacao + 1;
 
       Map<String, dynamic> data = {'pontuacao': this.aluno.pontuacao};
       db

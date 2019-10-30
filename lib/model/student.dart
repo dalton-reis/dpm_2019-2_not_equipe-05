@@ -8,8 +8,8 @@ class Aluno {
   Aluno(this.nome, this.pontuacao, this.documentID);
 
   Aluno.fromDocument(DocumentSnapshot documentSnapshot) {
-    Aluno(documentSnapshot.data['nome'], documentSnapshot.data['pontuacao'], documentSnapshot.documentID);
+    this.nome = documentSnapshot.data['nome'];
+    this.pontuacao = documentSnapshot.data['pontuacao'];
+    this.documentID = documentSnapshot.documentID;
   }
-
-
 }
