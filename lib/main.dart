@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 import 'package:quantocusta/screens/sala/criacao.dart';
+import 'package:quantocusta/screens/sala/jogada.dart';
 
 void main() => runApp(QuantoCusta());
 
@@ -16,7 +17,8 @@ class QuantoCusta extends StatelessWidget {
             buttonColor: Colors.lightBlueAccent,
             textTheme: ButtonTextTheme.accent,
           )),
-      home: SalaCriacao(),
+      home: JogadaState(),
+
     );
   }
 }
