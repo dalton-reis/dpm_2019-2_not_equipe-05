@@ -29,7 +29,8 @@ class _SalaCriacaoAlunoState extends State<SalaCriacaoAluno> {
   Future<DocumentReference> adicionarAluno(BuildContext context) {
     return db.collection("salas").document(this.classroom.documentId).collection("alunos").add({
       'nome': _nomeAluno.value.text,
-      'pontuacao': 0,
+      'quantidadeAcertos': 0,
+      'quantidadeErros': 0
     });
   }
 

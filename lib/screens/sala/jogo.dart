@@ -90,7 +90,7 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
                       snapshot.data.documents.map((DocumentSnapshot document) {
                     return ListTile(
                       title: Text(document['nome']),
-                      subtitle: Text(document['pontuacao'].toString()),
+                      subtitle: Text('Acertos: ' + document['quantidadeAcertos'].toString() + ', Erros: ' + document['quantidadeErros'].toString()),
                     );
                   }).toList(),
                 ));
