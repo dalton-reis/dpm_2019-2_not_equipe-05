@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 import 'package:quantocusta/model/classroom.dart';
+import 'package:quantocusta/model/produto.dart';
 import 'package:quantocusta/screens/sala/criacao.dart';
 import 'package:quantocusta/screens/sala/criacao_aluno.dart';
 
@@ -52,13 +53,13 @@ class _LoginComPinState extends State<LoginComPin> {
                   debugPrint(controller.text);
                 },
                 pinCodeTextFieldLayoutType:
-                PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
+                    PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
                 wrapAlignment: WrapAlignment.start,
                 pinBoxDecoration:
-                ProvidedPinBoxDecoration.underlinedPinBoxDecoration,
+                    ProvidedPinBoxDecoration.underlinedPinBoxDecoration,
                 pinTextStyle: TextStyle(fontSize: 30.0),
                 pinTextAnimatedSwitcherTransition:
-                ProvidedPinBoxTextAnimation.scalingTransition,
+                    ProvidedPinBoxTextAnimation.scalingTransition,
                 pinTextAnimatedSwitcherDuration: Duration(milliseconds: 200),
               ),
               Visibility(
@@ -87,21 +88,41 @@ class _LoginComPinState extends State<LoginComPin> {
                       onPressed: () {
                         setState(() {
                           numeroSala = int.tryParse(controller.text);
-                          db.collection("salas").limit(1).where("idSala", isEqualTo: numeroSala)
-                          .getDocuments().then((documents) {
-
-                            if (documents == null || documents.documents == null || documents.documents.isEmpty) {
+                          db
+                              .collection("salas")
+                              .limit(1)
+                              .where("idSala", isEqualTo: numeroSala)
+                              .getDocuments()
+                              .then((documents) {
+                            if (documents == null ||
+                                documents.documents == null ||
+                                documents.documents.isEmpty) {
                               controller.text = null;
                               hasError = true;
                             } else {
-                              DocumentSnapshot document = documents.documents.elementAt(0);
-                              Classroom classroom = new Classroom.fromDocument(document);
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                    return SalaCriacaoAluno(classroom);
-                                  }));
-                            }
+                              DocumentSnapshot document =
+                                  documents.documents.elementAt(0);
+                              Classroom classroom =
+                                  new Classroom.fromDocument(document);
 
+                              db
+                                  .collection("salas")
+                                  .document(classroom.documentId)
+                                  .collection("produtos")
+                                  .getDocuments()
+                                  .then((produtos) {
+                                List<Produto> produtosMapped = produtos
+                                    .documents
+                                    .map((document) =>
+                                        new Produto.from(document))
+                                    .toList();
+                                classroom.produtos = produtosMapped;
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return SalaCriacaoAluno(classroom);
+                                }));
+                              });
+                            }
                           });
                         });
                       },
@@ -110,12 +131,12 @@ class _LoginComPinState extends State<LoginComPin> {
                       padding: const EdgeInsets.only(top: 10),
                       child: Text('Criar uma sala',
                           style:
-                          TextStyle(color: Colors.black45, fontSize: 18)),
+                              TextStyle(color: Colors.black45, fontSize: 18)),
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                              return SalaCriacao();
-                            }));
+                          return SalaCriacao();
+                        }));
                       },
                     )
                   ],

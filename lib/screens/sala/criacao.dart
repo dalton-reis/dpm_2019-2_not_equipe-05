@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/enums.dart';
+import 'package:quantocusta/model/produto_service.dart';
 import 'package:quantocusta/screens/sala/jogo.dart';
 
 class SalaCriacao extends StatefulWidget {
@@ -14,12 +15,11 @@ class SalaCriacao extends StatefulWidget {
 
 class _SalaCriacaoState extends State<SalaCriacao> {
   final db = Firestore.instance;
+  final produtoService = new ProdutoService();
   final TextEditingController _controllerTeacher = TextEditingController();
 
-  //final TextEditingController _controllerDificulty = TextEditingController();
   Dificulty valueDificulty = Dificulty.FACIL;
-  final TextEditingController _controllerTime = TextEditingController();
-  final TextEditingController _controllerPlayersAmount =
+  final TextEditingController _controllerProductQuantity =
       TextEditingController();
   List _dificuldade = ['Básico', 'Fácil', 'Normal', 'Difícil', 'Avançado'];
   List<DropdownMenuItem<String>> dificuldade = new List();
@@ -40,7 +40,7 @@ class _SalaCriacaoState extends State<SalaCriacao> {
   }
 
   String showDificulty(Dificulty dificulty) {
-    switch (dificulty){
+    switch (dificulty) {
       case Dificulty.DIFICIL:
         return 'Difícil';
       case Dificulty.FACIL:
@@ -51,7 +51,7 @@ class _SalaCriacaoState extends State<SalaCriacao> {
   }
 
   IconData showIconDificulty(Dificulty dificulty) {
-    switch (dificulty){
+    switch (dificulty) {
       case Dificulty.DIFICIL:
         return Icons.looks_3;
       case Dificulty.FACIL:
@@ -61,19 +61,50 @@ class _SalaCriacaoState extends State<SalaCriacao> {
     }
   }
 
-  Future<DocumentReference> createClassroom(BuildContext context) {
-    return db.collection("salas").add({
-      'idSala': generateRandom(),
-      'dificuldade': valueDificulty.toString(),
-      'duracao': int.tryParse(
-          _controllerTime.value.text.toString()),
-      'nomeProfessor':
-      _controllerTeacher.value.text.toString(),
-      'status': Status.AGUARDANDO.toString(),
-      'qntJogadores': int.tryParse(
-          _controllerPlayersAmount.value.text.toString()),
-    });
+  Future<Classroom> createClassroom(BuildContext context) async {
+    int quantidadeDecimal;
+    int quantidadeInteiro;
 
+    int quantidadeProdutos =
+        int.tryParse(_controllerProductQuantity.value.text.toString());
+
+    switch (valueDificulty) {
+      case Dificulty.DIFICIL:
+        quantidadeDecimal = (quantidadeProdutos * 0.7).floor();
+        break;
+      case Dificulty.MEDIO:
+        quantidadeDecimal = (quantidadeProdutos * 0.5).floor();
+        break;
+      case Dificulty.FACIL:
+        quantidadeDecimal = (quantidadeProdutos * 0.3).floor();
+        break;
+    }
+    quantidadeInteiro = quantidadeProdutos - quantidadeDecimal;
+
+    return produtoService
+        .buscarProdutosNovaSala(quantidadeInteiro, quantidadeDecimal)
+        .then((produtos) {
+      return db.collection("salas").add({
+        'idSala': generateRandom(),
+        'dificuldade': valueDificulty.toString(),
+        'quantidadeProdutos': quantidadeProdutos,
+        'quantidadeInteiro': quantidadeInteiro,
+        'quantidadeDecimal': quantidadeDecimal,
+        'nomeProfessor': _controllerTeacher.value.text.toString(),
+        'status': Status.AGUARDANDO.toString(),
+      }).then((documentAdded) {
+        produtos.forEach((produto) => db
+            .collection("salas")
+            .document(documentAdded.documentID)
+            .collection("produtos")
+            .add(produto.toJson()));
+        return documentAdded.get().then((documentSnap) {
+          Classroom c = new Classroom.fromDocument(documentSnap);
+          c.produtos = produtos;
+          return c;
+        });
+      });
+    });
   }
 
   @override
@@ -95,17 +126,10 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                   controller: _controllerTeacher,
                 ),
                 InputText(
-                  icon: Icons.people,
-                  hint: 'Insira a quantidade máxima de jogadores',
-                  labelText: 'Qnt. Jogadores',
-                  controller: _controllerPlayersAmount,
-                  keyboardType: TextInputType.number,
-                ),
-                InputText(
-                  icon: Icons.alarm,
-                  hint: 'Insira o tempo de duração (min)',
-                  labelText: 'Duração',
-                  controller: _controllerTime,
+                  icon: Icons.devices_other,
+                  hint: 'Insira a quantidade de produtos para a sala',
+                  labelText: 'Qnt. Produtos',
+                  controller: _controllerProductQuantity,
                   keyboardType: TextInputType.number,
                 ),
                 Padding(
@@ -124,7 +148,10 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Icon(showIconDificulty(dificulty),color: Colors.grey,),
+                            Icon(
+                              showIconDificulty(dificulty),
+                              color: Colors.grey,
+                            ),
                             SizedBox(width: 10),
                             Text(
                               showDificulty(dificulty),
@@ -149,13 +176,11 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                     ),
                     padding: EdgeInsets.all(12),
                     onPressed: () {
-                      createClassroom(context).then((documentReference) {
-                        documentReference.get().then((documentSnapshot) {
-                          Classroom classroom = new Classroom.fromDocument(documentSnapshot);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return SalaJogoProfessor(classroom);
-                          }));
-                        });
+                      createClassroom(context).then((classroom) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return SalaJogoProfessor(classroom);
+                        }));
                       });
                     },
                   ),

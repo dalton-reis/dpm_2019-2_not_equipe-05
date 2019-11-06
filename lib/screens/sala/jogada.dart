@@ -34,16 +34,7 @@ class _JogadaState extends State<JogadaState> {
   List<Dinheiro> dinheirosSelecionados = [];
   num totalSelecionado = 0;
   Produto produtoAtual;
-
-  Future<List<Produto>> buscarProdutos() async {
-    var produtosEncontrados = await db
-        .collection("produtos")
-        .where("imagem", isGreaterThan: "")
-        .getDocuments();
-    return produtosEncontrados.documents
-        .map((document) => new Produto.from(document))
-        .toList();
-  }
+  DateTime lastStart;
 
   Future<List<Dinheiro>> buscarDinheiro() async {
     var dinheiros = await db
@@ -62,18 +53,19 @@ class _JogadaState extends State<JogadaState> {
   }
 
   void iniciar() async {
-    buscarProdutos().then((produtos) {
-      this.produtos = produtos;
-      setState(() => produtoAtual = this.produtos.elementAt(0));
-    });
+    this.produtos = this.sala.produtos;
+    setState(() => produtoAtual = this.produtos.elementAt(0));
     this.dinheiros = buscarDinheiro();
+    new Timer(Duration(seconds: 3), () {
+      this.lastStart = DateTime.now();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Sala XPTO'),
+          title: Text('Sala ' + this.sala.idSala.toString()),
         ),
         body: Padding(
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
@@ -83,8 +75,10 @@ class _JogadaState extends State<JogadaState> {
               children: <Widget>[
                 Row(children: [
                   Center(
-                      child: Text(
-                          'Jogada ' + _quantidadeJogadas.toString() + '/10'))
+                      child: Text('Jogada ' +
+                          _quantidadeJogadas.toString() +
+                          '/' +
+                          this.sala.quantidadeProdutos.toString()))
                 ]),
                 Row(children: [
                   produtoAtual != null
@@ -163,12 +157,19 @@ class _JogadaState extends State<JogadaState> {
       this.aluno.pontuacao = this.aluno.pontuacao + 1;
 
       Map<String, dynamic> data = {'pontuacao': this.aluno.pontuacao};
-      db
+      DocumentReference alunoDocument = db
           .collection("salas")
           .document(this.sala.documentId)
           .collection("alunos")
-          .document(aluno.documentID)
-          .updateData(data);
+          .document(aluno.documentID);
+
+      DateTime agora = DateTime.now();
+      Duration difference = agora.difference(lastStart);
+
+      alunoDocument.updateData(data);
+      Map<String, dynamic> produtoJson = this.produtoAtual.toJson();
+      produtoJson = {...produtoJson, 'segundosDemorados': difference.inSeconds};
+      alunoDocument.collection("produtos").add(produtoJson);
       new Timer(Duration(seconds: 3), () {
         this.realizarNovaJogada();
       });
@@ -178,6 +179,7 @@ class _JogadaState extends State<JogadaState> {
   void realizarNovaJogada() {
     this.produtosUtilizados.add(produtoAtual);
     this.produtos.remove(produtoAtual);
+    this.lastStart = DateTime.now();
     if (produtos.length > 0) {
       Random random = new Random();
       num index =

@@ -1,17 +1,23 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quantocusta/model/enums.dart';
+import 'package:quantocusta/model/produto.dart';
 
 class Classroom {
   String _documentId;
   int _idSala;
   String _nomeProfessor;
-  int _duracao;
   int _qntJogadores;
+  int _quantidadeProdutos;
+  int _quantidadeInteiro;
+  int _quantidadeDecimal;
+
   Dificulty _dificuldade;
   Status _status;
+  List<Produto> produtos;
 
-  Classroom(this._documentId, this._idSala, this._nomeProfessor, this._duracao,
+
+  Classroom(this._documentId, this._idSala, this._nomeProfessor,
       this._qntJogadores, this._dificuldade, this._status);
 
   Classroom.fromDocument(DocumentSnapshot documentSnapshot) {
@@ -20,8 +26,11 @@ class Classroom {
     this._documentId = documentSnapshot.documentID;
     this._idSala = documentSnapshot.data['idSala'];
     this._nomeProfessor = documentSnapshot.data['nomeProfessor'];
-    this._duracao = documentSnapshot.data['duracao'];
     this._qntJogadores = documentSnapshot.data['qntJogadores'];
+    this._qntJogadores = documentSnapshot.data['qntJogadores'];
+    this._quantidadeDecimal = documentSnapshot.data['quantidadeDecimal'];
+    this._quantidadeInteiro = documentSnapshot.data['quantidadeInteiro'];
+    this._quantidadeProdutos = documentSnapshot.data['quantidadeProdutos'];
     this._dificuldade = dif;
     this._status = status;
   }
@@ -34,9 +43,13 @@ class Classroom {
 
   int get qntJogadores => _qntJogadores;
 
-  int get duracao => _duracao;
-
   String get nomeProfessor => _nomeProfessor;
+
+  int get quantidadeProdutos => _quantidadeProdutos;
+
+  int get quantidadeDecimal => _quantidadeDecimal;
+
+  int get quantidadeInteiro => _quantidadeInteiro;
 
   int get idSala => _idSala;
 
