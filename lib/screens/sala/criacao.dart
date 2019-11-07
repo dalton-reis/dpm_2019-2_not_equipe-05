@@ -6,6 +6,7 @@ import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/model/produto_service.dart';
+import 'package:quantocusta/screens/sala/edicao.dart';
 import 'package:quantocusta/screens/sala/jogo.dart';
 
 class SalaCriacao extends StatefulWidget {

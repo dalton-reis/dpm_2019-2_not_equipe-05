@@ -39,7 +39,7 @@ class _JogadaState extends State<JogadaState> {
   Future<List<Dinheiro>> buscarDinheiro() async {
     var dinheiros = await db
         .collection("dinheiros")
-        .where("imagem", isGreaterThan: "")
+        .orderBy("valor", descending: false)
         .getDocuments();
     return dinheiros.documents
         .map((document) => new Dinheiro.from(document))
@@ -146,7 +146,7 @@ class _JogadaState extends State<JogadaState> {
                               onPressed: () {
                                 this.desfazerJogada();
                               },
-                              child: const Text('Desfazer ultima',
+                              child: const Text('Desfazer última',
                                   style: TextStyle(fontSize: 14)),
                             )
                           ],
@@ -172,12 +172,12 @@ class _JogadaState extends State<JogadaState> {
     if (this.produtoAtual != null &&
         this.produtoAtual.valor.toStringAsFixed(2) ==
             this.totalSelecionado.toStringAsFixed(2)) {
-      mensagem = 'Acertou mizeravi!';
+      mensagem = 'Resposta correta!';
       this.aluno.quantidadeAcertos = this.aluno.quantidadeAcertos + 1;
       acertou = true;
     } else {
       this.aluno.quantidadeErros = this.aluno.quantidadeErros + 1;
-      mensagem = 'Errou mané';
+      mensagem = 'Valor incorreto!';
       acertou = false;
     }
 
