@@ -89,7 +89,7 @@ class _JogadaState extends State<JogadaState> {
                               width: 100,
                             ),
                             Text('Valor: ' +
-                                produtoAtual.valor.toStringAsPrecision(2))
+                                produtoAtual.valor.toStringAsPrecision(3))
                           ])
                               : Center(child: CircularProgressIndicator())
                         ]),
@@ -120,7 +120,7 @@ class _JogadaState extends State<JogadaState> {
                         Row(
                           children: <Widget>[
                             Text("Total selecionado: " +
-                                this.totalSelecionado.toStringAsPrecision(2))
+                                this.totalSelecionado.toStringAsPrecision(3))
                           ],
                         ),
                         Row(
