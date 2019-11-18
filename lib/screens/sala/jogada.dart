@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/model/classroom.dart';
@@ -61,98 +62,263 @@ class _JogadaState extends State<JogadaState> {
     });
   }
 
+  CarouselSlider carousel (AsyncSnapshot<List<Dinheiro>> snapshot) {
+    return CarouselSlider(
+      items: snapshot.data.map((dinheiro) {
+        return Builder (
+          builder: (BuildContext context) {
+            return Container(
+              //margin: EdgeInsets.symmetric(horizontal: 5.0),
+              child: GestureDetector(
+                child: Image.network(dinheiro.imagem, height: 100, width: 100,),
+                onTap: () {
+                  selecionarDinheiro(context, dinheiro);
+                },
+              ),
+            );
+          }
+        );
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext contextBuild) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Sala ' + this.sala.idSala.toString()),
+      appBar: AppBar(
+        title: Text(
+          this.sala.idSala.toString(),
+          style: TextStyle(
+            fontSize: 24.0,
+          ),
         ),
-        body: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
-            child: Container(
-                child: SingleChildScrollView(
-                    child: Column(
+        centerTitle: true,
+        leading: Container(),
+      ),
+      body: Center(
+        child: Container(
+          height: screenHeight,
+          //width: screenWidth,
+          color: Colors.green,
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 20, 10, 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget> [
+                        Text(
+                          'Jogada ' +
+                              _quantidadeJogadas.toString() +
+                              '/' +
+                              this.sala.quantidadeProdutos.toString(),
+                          style: TextStyle(
+                            fontSize: 30,
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 6
+                              ..color = Colors.blue[700],
+                          )
+                        ),
+                        Text(
+                          'Jogada ' +
+                              _quantidadeJogadas.toString() +
+                              '/' +
+                              this.sala.quantidadeProdutos.toString(),
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Center(
+                child: Stack(
+                  alignment: const Alignment(-0.7, -0.5),
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.all(0.0),
+                      decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        // borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        color: Colors.orange,
+                      ),
+                      height: screenHeight * 0.35,
+                      width: screenWidth * 1,
+                      child: produtoAtual != null
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image.network(
+                                  produtoAtual.imagem,
+                                  height: MediaQuery.of(context).size.height *
+                                      0.3,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.3,
+                                ),
+                                //Text('Valor: ' + produtoAtual.valor.toStringAsPrecision(2))
+                              ],
+                            )
+                          : CircularProgressIndicator(),
+                    ),
+                    RotationTransition(
+                      turns: AlwaysStoppedAnimation(-15 / 360),
+                      child: Container(
+                        padding: const EdgeInsets.all(20.0),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 71, 150, 236),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blue,
+                              blurRadius: 20.0, // has the effect of softening the shadow
+                              spreadRadius: 1.0, // has the effect of extending the shadow
+                              offset: Offset(
+                                2.0, // horizontal, move right 10
+                                2.0, // vertical, move down 10
+                              ),
+                            )
+                          ]
+                        ),
+                        child: Text(
+                          produtoAtual.valor.toStringAsPrecision(2),
+                          style: TextStyle(
+                            fontSize: 28,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Center(
+                      child: Row(
+                        children: <Widget>[
+                          Text("Total selecionado: " +
+                              this.totalSelecionado.toStringAsPrecision(2))
+                        ],
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(children: [
-                          Center(
-                              child: Text('Jogada ' +
-                                  _quantidadeJogadas.toString() +
-                                  '/' +
-                                  this.sala.quantidadeProdutos.toString()))
-                        ]),
-                        Row(children: [
-                          produtoAtual != null
-                              ? Column(children: [
-                            Image.network(
-                              produtoAtual.imagem,
-                              height: 100,
-                              width: 100,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: FloatingActionButton(
+                            heroTag: "btn1",
+                            child: Icon(
+                              Icons.settings_backup_restore,
                             ),
-                            Text('Valor: ' +
-                                produtoAtual.valor.toStringAsFixed(2))
-                          ])
-                              : Center(child: CircularProgressIndicator())
-                        ]),
-                        Row(
+                            backgroundColor: Colors.yellow,
+                            onPressed: () {
+                              this.desfazerJogada();
+                            },
+                            // child: const Text('Desfazer ultima',
+                            //     style: TextStyle(fontSize: 14)),
+                          ),
+                        ),
+                        Builder(
+                          builder: (BuildContext build) {
+                            return FloatingActionButton(
+                              heroTag: "btn2",
+                              child: Icon(
+                                Icons.thumb_up
+                              ),
+                              backgroundColor: Colors.lightGreenAccent,
+                              onPressed: () {
+                                this.confirmarJogada(build);
+                              },
+                              // child: const Text('Confirmar',
+                              //     style: TextStyle(fontSize: 14)),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.cyan,
+                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                
+                              },
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              shape: CircleBorder(),
+                              color: Colors.black12,
+                            ),
                             FutureBuilder(
                               future: this.dinheiros,
                               builder: (BuildContext context,
-                                  AsyncSnapshot<List<Dinheiro>> snapshot) {
-                                if (snapshot.hasData) {
-                                  return Column(children: [
-                                    for (Dinheiro dinheiro in snapshot.data)
-                                      GestureDetector(
-                                        child: Image.network(dinheiro.imagem,
-                                            height: 100, width: 100),
-                                        onTap: () {
-                                          selecionarDinheiro(context, dinheiro);
-                                        },
-                                      )
-                                  ]);
+                                    AsyncSnapshot<List<Dinheiro>> snapshot) {
+                                if(snapshot.connectionState == ConnectionState.done) {
+                                  if(snapshot.hasData) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.cyan,
+                                      ),
+                                      child: carousel(snapshot),
+                                    );
+                                  }
+                                } else {
+                                  return CircularProgressIndicator();
                                 }
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              },
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text("Total selecionado: " +
-                                this.totalSelecionado.toStringAsFixed(2))
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Center(child: getIconeComparacao())
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Builder(
-                              builder: (BuildContext build) {
-                                return RaisedButton(
-                                  onPressed: () {
-                                    this.confirmarJogada(build);
-                                  },
-                                  child: const Text('Confirmar',
-                                      style: TextStyle(fontSize: 14)),
-                                );
-                              },
+                              }
                             ),
-
-                            RaisedButton(
+                            FlatButton(
                               onPressed: () {
-                                this.desfazerJogada();
+
                               },
-                              child: const Text('Desfazer última',
-                                  style: TextStyle(fontSize: 14)),
-                            )
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              shape: CircleBorder(),
+                              color: Colors.black12,
+                            ),
                           ],
-                        )
-                      ],
-                    )))));
+                        ),
+                      ),
+                    ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget getIconeComparacao() {
