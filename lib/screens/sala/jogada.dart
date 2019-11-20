@@ -188,7 +188,7 @@ class _JogadaState extends State<JogadaState> {
                           ]
                         ),
                         child: Text(
-                          produtoAtual.valor.toStringAsPrecision(2),
+                          "R\$" + produtoAtual.valor.toStringAsFixed(2).replaceAll('.', ','),
                           style: TextStyle(
                             fontSize: 28,
                             color: Colors.white,
@@ -210,7 +210,7 @@ class _JogadaState extends State<JogadaState> {
                       child: Row(
                         children: <Widget>[
                           Text("Total selecionado: " +
-                              this.totalSelecionado.toStringAsPrecision(2))
+                              "R\$" + this.totalSelecionado.toStringAsFixed(2).replaceAll('.', ','))
                         ],
                       ),
                     ),
