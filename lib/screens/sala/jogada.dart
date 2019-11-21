@@ -68,7 +68,6 @@ class _JogadaState extends State<JogadaState> {
         return Builder (
           builder: (BuildContext context) {
             return Container(
-              //margin: EdgeInsets.symmetric(horizontal: 5.0),
               child: GestureDetector(
                 child: Image.network(dinheiro.imagem, height: 100, width: 100,),
                 onTap: () {
@@ -148,8 +147,18 @@ class _JogadaState extends State<JogadaState> {
                       margin: const EdgeInsets.all(0.0),
                       decoration: new BoxDecoration(
                         shape: BoxShape.circle,
-                        // borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         color: Colors.orange,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 20.0, // has the effect of softening the shadow
+                            spreadRadius: 1.0, // has the effect of extending the shadow
+                            offset: Offset(
+                              2.0, // horizontal, move right 10
+                              2.0, // vertical, move down 10
+                            ),
+                          )
+                        ]
                       ),
                       height: screenHeight * 0.35,
                       width: screenWidth * 1,
@@ -170,7 +179,7 @@ class _JogadaState extends State<JogadaState> {
                           : CircularProgressIndicator(),
                     ),
                     RotationTransition(
-                      turns: AlwaysStoppedAnimation(-15 / 360),
+                      turns: AlwaysStoppedAnimation(-20 / 360),
                       child: Container(
                         padding: const EdgeInsets.all(20.0),
                         decoration: BoxDecoration(
@@ -188,7 +197,7 @@ class _JogadaState extends State<JogadaState> {
                           ]
                         ),
                         child: Text(
-                          "R\$" + produtoAtual.valor.toStringAsFixed(2).replaceAll('.', ','),
+                          "R\$ " + produtoAtual.valor.toStringAsFixed(2).replaceAll('.', ','),
                           style: TextStyle(
                             fontSize: 28,
                             color: Colors.white,
@@ -206,14 +215,42 @@ class _JogadaState extends State<JogadaState> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Center(
-                      child: Row(
+                    Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: Colors.cyanAccent,
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blue,
+                            blurRadius: 20.0, // has the effect of softening the shadow
+                            spreadRadius: 1.0, // has the effect of extending the shadow
+                            offset: Offset(
+                              2.0, // horizontal, move right 10
+                              2.0, // vertical, move down 10
+                            ),
+                          )
+                        ]
+                      ),
+                      child: Column(
                         children: <Widget>[
-                          Text("Total selecionado: " +
-                              "R\$" + this.totalSelecionado.toStringAsFixed(2).replaceAll('.', ','))
+                          Text("Total selecionado:",
+                            style: TextStyle(
+                              fontSize: 22.0,
+                              color: Colors.indigo,
+                            ),
+                          ),
+                          Text(
+                            "R\$ " + this.totalSelecionado.toStringAsFixed(2).replaceAll('.', ','),
+                            style: TextStyle(
+                              fontSize: 26.0,
+                              color: Colors.purple,
+                            ),
+                          ),
                         ],
                       ),
                     ),
+                    getIconeComparacao(),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -266,47 +303,49 @@ class _JogadaState extends State<JogadaState> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            FlatButton(
-                              onPressed: () {
-                                
-                              },
-                              child: Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                                size: 20,
+                            Expanded(
+                              child: FlatButton(
+                                onPressed: () {
+                                  
+                                },
+                                child: Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                shape: CircleBorder(),
+                                color: Colors.black12,
                               ),
-                              shape: CircleBorder(),
-                              color: Colors.black12,
                             ),
                             FutureBuilder(
                               future: this.dinheiros,
                               builder: (BuildContext context,
                                     AsyncSnapshot<List<Dinheiro>> snapshot) {
-                                if(snapshot.connectionState == ConnectionState.done) {
-                                  if(snapshot.hasData) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.cyan,
-                                      ),
-                                      child: carousel(snapshot),
-                                    );
-                                  }
+                                if(snapshot.hasData) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.cyan,
+                                    ),
+                                    child: carousel(snapshot),
+                                  );
                                 } else {
                                   return CircularProgressIndicator();
                                 }
                               }
                             ),
-                            FlatButton(
-                              onPressed: () {
+                            Expanded(
+                              child: FlatButton(
+                                onPressed: () {
 
-                              },
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: Colors.white,
-                                size: 20,
+                                },
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                shape: CircleBorder(),
+                                color: Colors.black12,
                               ),
-                              shape: CircleBorder(),
-                              color: Colors.black12,
                             ),
                           ],
                         ),
@@ -324,9 +363,41 @@ class _JogadaState extends State<JogadaState> {
   Widget getIconeComparacao() {
     if (this.produtoAtual != null) {
       if (this.totalSelecionado < this.produtoAtual.valor) {
-        return Icon(Icons.keyboard_arrow_left, size: 24, color: Colors.red);
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white24,
+          ),
+          child: Icon(
+            Icons.arrow_upward, 
+            size: 50, 
+            color: Colors.red
+          )
+        );
       } else if (this.totalSelecionado > this.produtoAtual.valor) {
-        return Icon(Icons.keyboard_arrow_right, size: 24, color: Colors.red);
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white24,
+          ),
+          child: Icon(
+            Icons.arrow_downward, 
+            size: 50, 
+            color: Colors.red
+          )
+        );
+      } else if (this.totalSelecionado == this.produtoAtual.valor) {
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white24,
+          ),
+          child: Icon(
+            Icons.check, 
+            size: 50, 
+            color: Colors.greenAccent
+          )
+        );
       }
     }
     return Container();
