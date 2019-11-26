@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/classroom.dart';
+import 'package:quantocusta/screens/sala/jogo.dart';
 
 class SalaEdicaoProfessor extends StatefulWidget {
   @override
-  _SalaEdicaoProfessorState createState() => _SalaEdicaoProfessorState();
+  _SalaEdicaoProfessorState createState() => _SalaEdicaoProfessorState(this._classroom);
 
   final Classroom _classroom;
 
@@ -13,6 +15,11 @@ class SalaEdicaoProfessor extends StatefulWidget {
 
 class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
   final db = Firestore.instance;
+  final TextEditingController _nomeAluno = TextEditingController();
+
+  Classroom classroom;
+
+  _SalaEdicaoProfessorState(this.classroom);
 
   String fieldDocument(DocumentReference documentReference, String field) {
     var data;
@@ -50,19 +57,60 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return Text('Loading...');
                 return Flexible(
-                    child: new ListView(
+                    child: ListView(
                   children:
                       snapshot.data.documents.map((DocumentSnapshot document) {
                     return ListTile(
                       title: Text(document['nome'],
-                                  style: TextStyle(fontSize: 14)),
-                      subtitle: Text('Editar nome | Remover da sala')
+                                  style: TextStyle(fontSize: 18)),
+                      trailing: Icon(Icons.edit),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Alterar o nome do aluno'),
+                              content: InputText(
+                                icon: Icons.person,
+                                labelText: 'Aluno',
+                                controller: _nomeAluno
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  color: Colors.blue,
+                                  textColor: Colors.white,
+                                  child: Text(
+                                    'Alterar',
+                                    style: TextStyle(fontSize: 20)
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                            },
+                        );
+                      },
                     );
-                  }).toList(),
+                  }).toList()
                 ));
               },
+            ),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Text(
+                'Iniciar',
+                style: TextStyle(fontSize: 20)
+              ),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return SalaJogoProfessor(this.classroom);
+                }));
+              }
             )
-          ],
+          ]
         ),
       ),
     );
