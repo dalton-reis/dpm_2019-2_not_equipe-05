@@ -1,14 +1,9 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/classroom.dart';
-import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/model/student.dart';
-import 'package:quantocusta/screens/sala/jogo.dart';
-
-import 'jogada.dart';
+import 'package:quantocusta/screens/sala/espera.dart';
 
 class SalaCriacaoAluno extends StatefulWidget {
   @override
@@ -70,7 +65,7 @@ class _SalaCriacaoAlunoState extends State<SalaCriacaoAluno> {
                         documentReference.get().then((documentSnapshot) {
                           Aluno aluno = new Aluno.fromDocument(documentSnapshot);
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return JogadaState(aluno, this.classroom);
+                            return EsperaState(aluno, this.classroom);
                           }));
                         });
                       });

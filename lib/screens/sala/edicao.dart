@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/classroom.dart';
+import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/screens/sala/jogo.dart';
 
 class SalaEdicaoProfessor extends StatefulWidget {
@@ -105,6 +106,11 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
                 style: TextStyle(fontSize: 20)
               ),
               onPressed: () {
+                DocumentReference salaDocument = db.collection("salas").document(this.classroom.documentId);
+                Map<String, dynamic> data = {
+                  'status': Status.INICIADO
+                };
+                salaDocument.updateData(data);
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return SalaJogoProfessor(this.classroom);
                 }));
