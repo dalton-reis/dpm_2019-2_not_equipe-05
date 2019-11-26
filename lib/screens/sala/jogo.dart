@@ -5,7 +5,7 @@ import 'package:quantocusta/model/aluno.dart';
 
 class SalaJogoProfessor extends StatefulWidget {
   @override
-  _SalaJogoProfessorState createState() => _SalaJogoProfessorState();
+  _SalaJogoProfessorState createState() => _SalaJogoProfessorState(this._classroom);
 
   final Classroom _classroom;
 
@@ -14,6 +14,10 @@ class SalaJogoProfessor extends StatefulWidget {
 
 class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
   final db = Firestore.instance;
+
+  Classroom classroom;
+
+  _SalaJogoProfessorState(this.classroom);
 
   String fieldDocument(DocumentReference documentReference, String field) {
     var data;

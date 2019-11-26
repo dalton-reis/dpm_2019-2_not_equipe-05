@@ -180,7 +180,7 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                       createClassroom(context).then((classroom) {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return SalaJogoProfessor(classroom);
+                          return SalaEdicaoProfessor(classroom);
                         }));
                       });
                     },
