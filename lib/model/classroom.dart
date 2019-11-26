@@ -27,7 +27,6 @@ class Classroom {
     this._idSala = documentSnapshot.data['idSala'];
     this._nomeProfessor = documentSnapshot.data['nomeProfessor'];
     this._qntJogadores = documentSnapshot.data['qntJogadores'];
-    this._qntJogadores = documentSnapshot.data['qntJogadores'];
     this._quantidadeDecimal = documentSnapshot.data['quantidadeDecimal'];
     this._quantidadeInteiro = documentSnapshot.data['quantidadeInteiro'];
     this._quantidadeProdutos = documentSnapshot.data['quantidadeProdutos'];

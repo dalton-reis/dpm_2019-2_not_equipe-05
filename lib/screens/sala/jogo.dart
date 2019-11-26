@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/model/classroom.dart';
-import 'package:quantocusta/model/student.dart';
+import 'package:quantocusta/model/aluno.dart';
 
 class SalaJogoProfessor extends StatefulWidget {
   @override

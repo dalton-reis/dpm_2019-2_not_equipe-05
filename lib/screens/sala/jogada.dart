@@ -3,12 +3,13 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/dinheiro.dart';
 import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/model/produto.dart';
-import 'package:quantocusta/model/student.dart';
+import 'package:quantocusta/model/aluno.dart';
 
 class JogadaState extends StatefulWidget {
   @override
@@ -95,18 +96,43 @@ class _JogadaState extends State<JogadaState> {
     if (this.produtoAtual != null &&
         this.produtoAtual.valor.toStringAsFixed(2) ==
             this.totalSelecionado.toStringAsFixed(2)) {
-      mensagem = 'Resposta correta!';
+      mensagem = 'Parabéns, mandou bem!';
       this.aluno.quantidadeAcertos = this.aluno.quantidadeAcertos + 1;
       acertou = true;
     } else {
       this.aluno.quantidadeErros = this.aluno.quantidadeErros + 1;
-      mensagem = 'Valor incorreto!';
+      mensagem = 'Na próxima você consegue!';
       acertou = false;
     }
 
-    final snackBar = SnackBar(
-        content: Text(mensagem), elevation: 40, duration: Duration(seconds: 5));
-    Scaffold.of(context).showSnackBar(snackBar);
+    Flushbar(
+      padding: EdgeInsets.all(10),
+      duration: Duration(seconds: 3),
+      borderRadius: 8,
+      backgroundColor: acertou ? Colors.lightGreen : Colors.redAccent.shade700,
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black45,
+          offset: Offset(3, 3),
+          blurRadius: 3,
+        ),
+      ],
+      // All of the previous Flushbars could be dismissed by swiping down
+      // now we want to swipe to the sides
+      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+      // The default curve is Curves.easeOut
+      forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
+      title: acertou ? "Resposta correta" : "Valor incorreto",
+      message: mensagem,
+    )..show(context);
+
+    // final snackBar = SnackBar(
+    //   content: Text(mensagem), 
+    //   elevation: 40, 
+    //   duration: Duration(seconds: 5),
+
+    // );
+    // Scaffold.of(context).showSnackBar(snackBar);
 
     DocumentReference alunoDocument = db
         .collection("salas")
@@ -171,25 +197,6 @@ class _JogadaState extends State<JogadaState> {
       });
     }
   }
-
-  // CarouselSlider _carousel (AsyncSnapshot<List<Dinheiro>> snapshot) {
-  //   return CarouselSlider(
-  //     items: snapshot.data.map((dinheiro) {
-  //       return Builder (
-  //         builder: (BuildContext context) {
-  //           return Container(
-  //             child: GestureDetector(
-  //               child: Image.network(dinheiro.imagem, height: 100, width: 100,),
-  //               onTap: () {
-  //                 selecionarDinheiro(context, dinheiro);
-  //               },
-  //             ),
-  //           );
-  //         }
-  //       );
-  //     }).toList(),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext contextBuild) {
@@ -408,7 +415,7 @@ class _JogadaState extends State<JogadaState> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+                padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -424,7 +431,7 @@ class _JogadaState extends State<JogadaState> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height: screenHeight * 0.2,
+                      height: screenHeight * 0.17,
                       decoration: BoxDecoration(
                         color: Colors.cyan,
                         borderRadius: BorderRadius.all(Radius.circular(16.0)),

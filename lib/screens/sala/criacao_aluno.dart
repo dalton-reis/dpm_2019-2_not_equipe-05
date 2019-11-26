@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/enums.dart';
-import 'package:quantocusta/model/student.dart';
+import 'package:quantocusta/model/aluno.dart';
 import 'package:quantocusta/screens/sala/jogo.dart';
 
 import 'jogada.dart';
