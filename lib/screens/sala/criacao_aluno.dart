@@ -65,7 +65,7 @@ class _SalaCriacaoAlunoState extends State<SalaCriacaoAluno> {
                         documentReference.get().then((documentSnapshot) {
                           Aluno aluno = new Aluno.fromDocument(documentSnapshot);
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return SalaEsperaAluno(classroom);
+                            return SalaEsperaAluno(classroom, aluno);
                           }));
                         });
                       });

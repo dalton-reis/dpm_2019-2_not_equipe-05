@@ -13,8 +13,9 @@ class SalaEsperaAluno extends StatefulWidget {
   _SalaEsperaAlunoState createState() => _SalaEsperaAlunoState();
 
   Classroom classroom;
+  Aluno alunoJogando;
 
-  SalaEsperaAluno(this.classroom);
+  SalaEsperaAluno(this.classroom, this.alunoJogando);
 }
 
 
@@ -56,25 +57,100 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
       ),
       body: Container(
         color: Colors.green,
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Olá ${widget.alunoJogando.nome}, seja bem-vindo!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+              child: Container(
+                padding: EdgeInsets.only(top: 8),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white38,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0))
+                ),
                 child: Text(
-                  'Aguardando partida iniciar...',
+                  'Jogadores na sala.',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-              //CircularProgressIndicator(),
-              Text(widget.classroom.idSala.toString()),
-              Text(widget.classroom.qntJogadores.toString()),
-            ],
-          ),
+            ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white38,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16.0), bottomRight: Radius.circular(16.0))
+                  ),
+                  padding: EdgeInsets.all(0),
+                  // color: Colors.white38,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: db
+                    .collection('salas')
+                    .document(widget.classroom.documentId)
+                    .collection('alunos')
+                    .snapshots(),
+                    builder: (BuildContext context, alunosSnapshot) {
+                      if(!alunosSnapshot.hasData) return LinearProgressIndicator();
+
+                      final int cardLength = alunosSnapshot.data.documents.length;
+
+                      return ListView.builder(
+                        itemCount: cardLength,
+                        itemBuilder: (context, index) {
+                          final Aluno aluno = Aluno.fromDocument(alunosSnapshot.data.documents[index]);
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: ListTile(
+                                title: Text(aluno.nome),
+                                subtitle: Text('testrr'),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16 ,16, 16),
+              child: Text(
+                'Aguardando partida iniciar.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: CircularProgressIndicator(),
+            ),
+          ],
         ),
       ),
     );

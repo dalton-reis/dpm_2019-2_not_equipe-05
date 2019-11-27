@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
+import 'package:quantocusta/model/aluno.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/produto.dart';
 import 'package:quantocusta/screens/sala/criacao_sala.dart';
@@ -13,11 +14,14 @@ class LoginComPin extends StatefulWidget {
 }
 
 class _LoginComPinState extends State<LoginComPin> {
+
+  Classroom classroom;
+  Aluno aluno;
+
   TextEditingController pinController = TextEditingController();
   TextEditingController alunoController = TextEditingController();
 
   int numeroSala;
-  String aluno = "";
   int pinLength = 5;
 
   bool errorSala = false;
@@ -25,6 +29,15 @@ class _LoginComPinState extends State<LoginComPin> {
   String errorMessage = "";
 
   final db = Firestore.instance;
+
+  Future<DocumentReference> adicionarAluno(BuildContext context) {
+    return db.collection("salas").document(this.classroom.documentId).collection("alunos").add({
+      'nome': alunoController.value.text,
+      'quantidadeAcertos': 0,
+      'quantidadeErros': 0
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -151,12 +164,11 @@ class _LoginComPinState extends State<LoginComPin> {
                         setState(
                           () {
                             numeroSala = int.tryParse(pinController.text);
-                            aluno = alunoController.text;
                             if (pinController.text.length < 5) {
                               errorSala = true;
                               errorMessage =
                                   "O identificador da sala exige 5 números!";
-                            } else if(aluno.isEmpty) {
+                            } else if(alunoController.text.isEmpty) {
                               errorAluno = true;
                             } else {
                               errorSala = false;
@@ -177,8 +189,8 @@ class _LoginComPinState extends State<LoginComPin> {
                                   } else {
                                     DocumentSnapshot document =
                                         documents.documents.elementAt(0);
-                                    Classroom classroom =
-                                        new Classroom.fromDocument(document);
+                                    this.classroom =
+                                       Classroom.fromDocument(document);
                                     db
                                         .collection("salas")
                                         .document(classroom.documentId)
@@ -194,21 +206,14 @@ class _LoginComPinState extends State<LoginComPin> {
                                         classroom.produtos = produtosMapped;
                                       },
                                     );
-                                    db
-                                        .collection("salas")
-                                        .document(classroom.documentId)
-                                        .collection("alunos")
-                                        .add({
-                                      "nome": aluno,
-                                      "quantidadeAcertos": 0,
-                                      "quantidadeErros": 0
+                                    adicionarAluno(context).then((documentReference) {
+                                      documentReference.get().then((documentSnapshot) {
+                                        Aluno aluno = new Aluno.fromDocument(documentSnapshot);
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                          return SalaEsperaAluno(classroom, aluno);
+                                        }));
+                                      });
                                     });
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) {
-                                        return SalaEsperaAluno(classroom);
-                                      }),
-                                    );
                                   }
                                 },
                               );
