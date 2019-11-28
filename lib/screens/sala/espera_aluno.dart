@@ -6,11 +6,12 @@ import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/aluno.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/enums.dart';
+import 'package:quantocusta/screens/sala/jogada.dart';
 import 'package:quantocusta/screens/sala/jogo.dart';
 
 class SalaEsperaAluno extends StatefulWidget {
   @override
-  _SalaEsperaAlunoState createState() => _SalaEsperaAlunoState();
+  _SalaEsperaAlunoState createState() => _SalaEsperaAlunoState(this.classroom, this.alunoJogando);
 
   Classroom classroom;
   Aluno alunoJogando;
@@ -24,10 +25,40 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
   final db = Firestore.instance;
   Future<List<Aluno>> alunos;
 
+  Classroom classroom;
+  Aluno alunoJogando;
+
+  _SalaEsperaAlunoState(this.classroom, this.alunoJogando);
+
   @override
   void initState() {
     super.initState();
     alunos = buscarAlunos();
+    aguardar();
+  }
+
+  void aguardar() async {
+    //final future = () {
+      db.collection('salas').document(widget.classroom.documentId).get().then((ref) {
+        //classroom = Classroom.fromDocument(snap);
+        if (ref.data['status'].toString() == Status.INICIADO.toString()) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return JogadaState(this.alunoJogando, this.classroom);
+          }));
+        }
+      });
+    //};
+    //future.then((response) => {
+      //
+    //});
+    /*db.collection('salas').document(widget.classroom.documentId).get().then((ref) {
+      //classroom = Classroom.fromDocument(snap);
+      if (ref.data['status'].toString() == Status.INICIADO.toString()) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return JogadaState(this.alunoJogando, this.classroom);
+        }));
+      }
+    });*/
   }
 
   Future<List<Aluno>> buscarAlunos() async {
