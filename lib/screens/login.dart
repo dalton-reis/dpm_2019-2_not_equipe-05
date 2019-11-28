@@ -7,6 +7,7 @@ import 'package:quantocusta/model/produto.dart';
 import 'package:quantocusta/screens/sala/criacao_sala.dart';
 import 'package:quantocusta/screens/sala/criacao_aluno.dart';
 import 'package:quantocusta/screens/sala/espera_aluno.dart';
+import 'package:quantocusta/screens/sala/jogada.dart';
 
 class LoginComPin extends StatefulWidget {
   @override
@@ -50,6 +51,9 @@ class _LoginComPinState extends State<LoginComPin> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                // Image(
+                //   image: AssetImage('assets/logo1.png'),
+                // ),
                 PinCodeTextField(
                   autofocus: true,
                   controller: pinController,
@@ -210,7 +214,7 @@ class _LoginComPinState extends State<LoginComPin> {
                                       documentReference.get().then((documentSnapshot) {
                                         Aluno aluno = new Aluno.fromDocument(documentSnapshot);
                                         Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                          return SalaEsperaAluno(classroom, aluno);
+                                          return SalaEsperaAluno(classroom,aluno);
                                         }));
                                       });
                                     });

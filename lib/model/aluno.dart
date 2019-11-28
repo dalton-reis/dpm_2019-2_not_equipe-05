@@ -1,27 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Aluno {
-  String _nome;
-
-  String get nome => _nome;
-
-  set nome(String nome) {
-    _nome = nome;
-  }
-  num _quantidadeAcertos = 0;
-
-  num get quantidadeAcertos => _quantidadeAcertos;
-
-  set quantidadeAcertos(num quantidadeAcertos) {
-    _quantidadeAcertos = quantidadeAcertos;
-  }
-  num _quantidadeErros = 0;
-
-  num get quantidadeErros => _quantidadeErros;
-
-  set quantidadeErros(num quantidadeErros) {
-    _quantidadeErros = quantidadeErros;
-  }
+  String nome;
+  num quantidadeAcertos = 0;
+  num quantidadeErros = 0;
   String documentID;
 
   Aluno.fromDocument(DocumentSnapshot documentSnapshot) {
