@@ -108,7 +108,7 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
               onPressed: () {
                 DocumentReference salaDocument = db.collection("salas").document(this.classroom.documentId);
                 Map<String, dynamic> data = {
-                  'status': Status.INICIADO
+                  'status': Status.INICIADO.toString()
                 };
                 salaDocument.updateData(data);
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
