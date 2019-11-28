@@ -12,7 +12,7 @@ class ProdutoService {
       int countInt = 0;
       int countDec = 0;
       for (DocumentSnapshot document in documentsRef.documents) {
-        Produto p = new Produto.from(document);
+        Produto p = new Produto.fromDocument(document);
         if (p.inteiro && countInt < quantidadeInteiros) {
           produtos.add(p);
           countInt++;

@@ -205,7 +205,7 @@ class _LoginComPinState extends State<LoginComPin> {
                                         List<Produto> produtosMapped = produtos
                                             .documents
                                             .map((document) =>
-                                                new Produto.from(document))
+                                                new Produto.fromDocument(document))
                                             .toList();
                                         classroom.produtos = produtosMapped;
                                       },

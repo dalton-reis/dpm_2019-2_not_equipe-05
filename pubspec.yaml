@@ -24,6 +24,11 @@ dependencies:
   cloud_firestore: ^0.12.10+2
   carousel_slider: ^1.3.0
   flushbar: ^1.9.1
+  pdf: ^1.3.24
+  path_provider: ^1.4.4
+  flutter_email_sender: ^2.2.0
+  flutter_mailer: ^0.4.1+1
+  network_image_to_byte: ^0.0.1
 
 dev_dependencies:
   flutter_test:

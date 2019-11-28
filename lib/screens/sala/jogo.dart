@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/aluno.dart';
 
+import 'finalizadaJogadaProfessor.dart';
+
 class SalaJogoProfessor extends StatefulWidget {
   @override
   _SalaJogoProfessorState createState() => _SalaJogoProfessorState(this._classroom);
@@ -15,9 +17,9 @@ class SalaJogoProfessor extends StatefulWidget {
 class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
   final db = Firestore.instance;
 
-  Classroom classroom;
+  final Classroom sala;
 
-  _SalaJogoProfessorState(this.classroom);
+  _SalaJogoProfessorState(this.sala);
 
   String fieldDocument(DocumentReference documentReference, String field) {
     var data;
@@ -94,10 +96,30 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
                       snapshot.data.documents.map((DocumentSnapshot document) {
                     return ListTile(
                       title: Text(document['nome']),
-                      subtitle: Text('Acertos: ' + document['quantidadeAcertos'].toString() + ', Erros: ' + document['quantidadeErros'].toString()),
+                      subtitle: Text('Acertos: ' +
+                          document['quantidadeAcertos'].toString() +
+                          ', Erros: ' +
+                          document['quantidadeErros'].toString()),
                     );
                   }).toList(),
                 ));
+              },
+            ),
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Text(
+                "Finalizar jogada",
+                style: TextStyle(fontSize: 20),
+              ),
+              padding: EdgeInsets.all(12),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return FinalizadaJogadaProfessorState(this.sala);
+                }));
               },
             )
           ],

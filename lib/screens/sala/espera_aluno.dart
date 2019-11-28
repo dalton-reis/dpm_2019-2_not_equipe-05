@@ -109,7 +109,7 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
                 padding: EdgeInsets.only(top: 8, bottom: 8),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    color: Colors.white38,
+                    color: Colors.white30,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(16.0),
                         topRight: Radius.circular(16.0))),
@@ -131,7 +131,7 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white38,
+                      color: Colors.white30,
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16.0),
                           bottomRight: Radius.circular(16.0))),

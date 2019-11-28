@@ -11,6 +11,8 @@ import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/model/produto.dart';
 import 'package:quantocusta/model/aluno.dart';
 
+import 'finalizadaJogada.dart';
+
 class JogadaState extends StatefulWidget {
   @override
   _JogadaState createState() => _JogadaState(this.aluno, this.sala);
@@ -151,7 +153,7 @@ class _JogadaState extends State<JogadaState> {
     Map<String, dynamic> produtoJson = this.produtoAtual.toJson();
     produtoJson = {
       ...produtoJson,
-      'segundosDemopontuarados': difference.inSeconds,
+      'segundosDemorados': difference.inSeconds,
       'acertou': acertou
     };
     alunoDocument.collection("produtos").add(produtoJson);
@@ -195,6 +197,10 @@ class _JogadaState extends State<JogadaState> {
         this.totalSelecionado = 0;
         this._quantidadeJogadas += 1;
       });
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return FinalizadaJogadaState(this.aluno, this.sala);
+      }));
     }
   }
 
