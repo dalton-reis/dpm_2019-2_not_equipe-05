@@ -37,7 +37,7 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
 
   void aguardar() async {
     //final future = () {
-      db.collection('salas').document(widget.classroom.documentId).get().then((ref) {
+      db.collection('salas').document(widget.classroom.documentId).snapshots().listen((ref) {
         //classroom = Classroom.fromDocument(snap);
         if (ref.data['status'].toString() == Status.INICIADO.toString()) {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
