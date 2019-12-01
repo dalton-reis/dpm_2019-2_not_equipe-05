@@ -1,13 +1,10 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/aluno.dart';
 import 'package:quantocusta/model/classroom.dart';
+import 'package:quantocusta/model/dinheiro.dart';
 import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/screens/sala/jogada.dart';
-import 'package:quantocusta/screens/sala/jogo.dart';
 
 class SalaEsperaAluno extends StatefulWidget {
   @override
@@ -28,11 +25,26 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
 
   _SalaEsperaAlunoState(this.classroom, this.alunoJogando);
 
+  List<Dinheiro> dinheiros;
+
   @override
   void initState() {
     super.initState();
     alunos = buscarAlunos();
+    buscarDinheiro().then((loaded) {
+      this.dinheiros = loaded;
+    });
     aguardar();
+  }
+
+  Future<List<Dinheiro>> buscarDinheiro() async {
+    var dinheiros = await db
+        .collection("dinheiros")
+        .orderBy("valor", descending: false)
+        .getDocuments();
+    return dinheiros.documents
+        .map((document) => new Dinheiro.from(document))
+        .toList();
   }
 
   void aguardar() async {
@@ -41,7 +53,7 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
         //classroom = Classroom.fromDocument(snap);
         if (ref.data['status'].toString() == Status.INICIADO.toString()) {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return JogadaState(this.alunoJogando, this.classroom);
+            return JogadaState(this.alunoJogando, this.classroom, this.dinheiros);
           }));
         }
       });

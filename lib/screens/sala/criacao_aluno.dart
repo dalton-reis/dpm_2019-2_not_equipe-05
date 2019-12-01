@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:quantocusta/components/input_text.dart';
 import 'package:quantocusta/model/aluno.dart';
 import 'package:quantocusta/model/classroom.dart';
-import 'package:quantocusta/screens/sala/espera.dart';
 import 'package:quantocusta/screens/sala/espera_aluno.dart';
 class SalaCriacaoAluno extends StatefulWidget {
   @override

@@ -15,12 +15,13 @@ import 'finalizadaJogada.dart';
 
 class JogadaState extends StatefulWidget {
   @override
-  _JogadaState createState() => _JogadaState(this.aluno, this.sala);
+  _JogadaState createState() => _JogadaState(this.aluno, this.sala, this.dinheirosLoaded);
 
   Aluno aluno;
   Classroom sala;
+  List<Dinheiro> dinheirosLoaded;
 
-  JogadaState(this.aluno, this.sala);
+  JogadaState(this.aluno, this.sala, this.dinheirosLoaded);
 }
 
 class _JogadaState extends State<JogadaState> {
@@ -28,14 +29,13 @@ class _JogadaState extends State<JogadaState> {
 
   Aluno aluno;
   Classroom sala;
+  List<Dinheiro> dinheirosLoaded;
 
-  _JogadaState(this.aluno, this.sala);
+  _JogadaState(this.aluno, this.sala, this.dinheirosLoaded);
 
   int _quantidadeJogadas = 1;
   List<Produto> produtos;
   List<Produto> produtosUtilizados = [];
-  Future<List<Dinheiro>> dinheiros;
-  List<Dinheiro> dinheirosLoaded = [];
   List<Dinheiro> dinheirosSelecionados = [];
   num totalSelecionado = 0;
   Produto produtoAtual;
@@ -60,7 +60,6 @@ class _JogadaState extends State<JogadaState> {
   void iniciar() async {
     this.produtos = this.sala.produtos;
     setState(() => produtoAtual = this.produtos.elementAt(0));
-    this.dinheiros = buscarDinheiro();
     new Timer(Duration(seconds: 3), () {
       this.lastStart = DateTime.now();
     });
@@ -129,8 +128,8 @@ class _JogadaState extends State<JogadaState> {
     )..show(context);
 
     // final snackBar = SnackBar(
-    //   content: Text(mensagem), 
-    //   elevation: 40, 
+    //   content: Text(mensagem),
+    //   elevation: 40,
     //   duration: Duration(seconds: 5),
 
     // );
@@ -461,19 +460,8 @@ class _JogadaState extends State<JogadaState> {
                               color: Colors.black12,
                             ),
                           ),
-                          FutureBuilder(
-                            future: this.dinheiros,
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<Dinheiro>> snapshot) {
-                              if (snapshot.hasData) {
-                                snapshot.data.map((dinheiro) {
-                                  dinheirosLoaded.add(dinheiro);
-                                }).toList();
-                                return carousel;
-                              } else {
-                                return CircularProgressIndicator();
-                              }
-                            },
+                          Container(
+                            child: carousel,
                           ),
                           Expanded(
                             child: FlatButton(
