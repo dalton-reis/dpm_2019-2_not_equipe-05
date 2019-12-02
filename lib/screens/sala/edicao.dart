@@ -21,6 +21,7 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
   final TextEditingController _nomeAluno = TextEditingController();
 
   Classroom classroom;
+  bool _iniciou = false;
 
   _SalaEdicaoProfessorState(this.classroom);
 
@@ -45,7 +46,8 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
     });
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget._classroom.nomeSala}  -  ${widget._classroom.idSala}'),
+        title: Text(
+            '${widget._classroom.nomeSala}  -  ${widget._classroom.idSala}'),
         centerTitle: true,
         leading: Container(),
       ),
@@ -209,6 +211,9 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
                   ),
                 ),
                 onPressed: () {
+                  // setState(() {
+                  //   this._iniciou = true;
+                  // });
                   DocumentReference salaDocument = db
                       .collection("salas")
                       .document(this.classroom.documentId);
@@ -216,11 +221,20 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
                     'status': Status.INICIADO.toString()
                   };
                   salaDocument.updateData(data);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return SalaJogoProfessor(this.classroom);
-                  }));
-                }),
-          )
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  //   return SalaJogoProfessor(this.classroom);
+                  // }));
+                }
+              ),
+           ),
+          // Visibility(
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(16.0),
+          //     child: Row(
+
+          //     ),
+          //   ),
+          // )
         ]),
       ),
     );

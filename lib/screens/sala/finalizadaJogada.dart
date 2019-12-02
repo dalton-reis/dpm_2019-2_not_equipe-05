@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/widgets.dart' as prefix0;
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/dinheiro.dart';
 import 'package:quantocusta/model/enums.dart';
@@ -44,61 +45,62 @@ class _FinalizadaJogadaState extends State<FinalizadaJogadaState> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Final de jogo!",
-            style: TextStyle(
-              fontSize: 24.0,
-            ),
+      appBar: AppBar(
+        title: Text(
+          "Final de jogo!",
+          style: TextStyle(
+            fontSize: 24.0,
           ),
-          centerTitle: true,
-          leading: Container(),
         ),
-        body: Center(
-          child: Container(
-            height: screenHeight,
-            //width: screenWidth,
-            color: Colors.green,
-            child: Column(children: <Widget>[
+        centerTitle: true,
+        leading: Container(),
+      ),
+      body: Center(
+        child: Container(
+          height: screenHeight,
+          //width: screenWidth,
+          color: Colors.green,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Final de Jogo ' + this.aluno.nome + '! ' + this.texto,
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
               Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 20, 10, 20),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(children: [
-                          Flexible(
-                              child: Text(
-                            'Final de Jogo ' +
-                                this.aluno.nome +
-                                '! ' +
-                                this.texto,
-                            style: TextStyle(
-                              fontSize: 30,
-                            ),
-                            textAlign: TextAlign.center,
-                          ))
-                        ]),
-                        RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          color: Colors.blue,
-                          textColor: Colors.white,
-                          child: Text(
-                            "Voltar para o início",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          padding: EdgeInsets.all(12),
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return LoginComPin();
-                            }));
-                          },
-                        )
-                      ]))
-            ]),
+                padding: const EdgeInsets.all(16.0),
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  color: Colors.blue,
+                  textColor: Colors.white,
+                  child: Text(
+                    "Voltar para o início",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  padding: EdgeInsets.all(12),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
+                      return LoginComPin();
+                    }), (r) => false);
+                  },
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
