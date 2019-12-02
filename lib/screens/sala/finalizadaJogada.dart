@@ -10,6 +10,8 @@ import 'package:quantocusta/model/enums.dart';
 import 'package:quantocusta/model/produto.dart';
 import 'package:quantocusta/model/aluno.dart';
 
+import '../login.dart';
+
 class FinalizadaJogadaState extends StatefulWidget {
   @override
   _FinalizadaJogadaState createState() =>
@@ -63,14 +65,37 @@ class _FinalizadaJogadaState extends State<FinalizadaJogadaState> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
+                        Row(children: [
+                          Flexible(
+                              child: Text(
                             'Final de Jogo ' +
                                 this.aluno.nome +
                                 '! ' +
                                 this.texto,
                             style: TextStyle(
                               fontSize: 30,
-                            ))
+                            ),
+                            textAlign: TextAlign.center,
+                          ))
+                        ]),
+                        RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          color: Colors.blue,
+                          textColor: Colors.white,
+                          child: Text(
+                            "Voltar para o início",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          padding: EdgeInsets.all(12),
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return LoginComPin();
+                            }));
+                          },
+                        )
                       ]))
             ]),
           ),

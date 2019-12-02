@@ -71,7 +71,6 @@ class _JogadaState extends State<JogadaState> {
   Widget getIconeComparacao() {
     Color color = Colors.red;
     IconData icone = Icons.arrow_upward;
-
     if (this.produtoAtual != null) {
       if (this.totalSelecionado < this.produtoAtual.valor) {
         color = Colors.red;
@@ -177,7 +176,7 @@ class _JogadaState extends State<JogadaState> {
   selecionarDinheiro(BuildContext context, Dinheiro dinheiro) {
     num totalFinal = this.totalSelecionado + dinheiro.valor;
     setState(() {
-      this.totalSelecionado = totalFinal;
+      this.totalSelecionado = num.parse(totalFinal.toStringAsFixed(2));
     });
     this.dinheirosSelecionados.add(dinheiro);
   }
@@ -188,7 +187,7 @@ class _JogadaState extends State<JogadaState> {
       if (removed != null) {
         num totalFinal = this.totalSelecionado - removed.valor;
         setState(() {
-          this.totalSelecionado = totalFinal;
+          this.totalSelecionado = num.parse(totalFinal.toStringAsFixed(2));
         });
       }
     }
