@@ -92,11 +92,11 @@ class _FinalizadaJogadaProfessorState
 
                                   final MailOptions mailOptions = MailOptions(
                                       body:
-                                          'Segue em anexo o resultado da sala ' +
+                                          'Segue em anexo o resultado da sala ' + this.sala.nomeSala + ' - ID: ' +
                                               this.sala.idSala.toString(),
                                       subject:
                                           'Quantocu\$ta - Resultado da sala ' +
-                                              this.sala.idSala.toString(),
+                                              this.sala.nomeSala,
                                       recipients: ['nicolasjcviana@gmail.com'],
                                       isHTML: true,
                                       attachments: [fileCreated.path]);
@@ -255,10 +255,10 @@ class _FinalizadaJogadaProfessorState
           pdfLib.Document pdf, pdfLib.Context context, List<Aluno> alunos) =>
       [
         pdfLib.Container(
-            alignment: pdfLib.Alignment.center,
+            alignment: pdfLib.Alignment.centerLeft,
             height: 20,
-            width: 200,
-            child: pdfLib.Text("Resultado sala " + this.sala.idSala.toString(),
+            width: 500,
+            child: pdfLib.Text("Resultado sala " + this.sala.nomeSala,
                 textAlign: pdfLib.TextAlign.center,
                 style: pdfLib.TextStyle(
                     fontWeight: pdfLib.FontWeight.bold, fontSize: 16))),
@@ -266,7 +266,7 @@ class _FinalizadaJogadaProfessorState
             child: createTable(context, alunos, pdf),
             alignment: pdfLib.Alignment.center),
         pdfLib.Container(
-            child: criarLegenda(context),
+            child: pdfLib.Padding(padding: pdfLib.EdgeInsets.fromLTRB(0, 24, 0, 24), child: criarLegenda(context)),
             alignment: pdfLib.Alignment.bottomLeft)
       ];
 
@@ -295,6 +295,10 @@ class _FinalizadaJogadaProfessorState
         pdfLib.TableRow(children: getLinhaLegenda("80s - 100s", rgbs100s)));
     rows.add(
         pdfLib.TableRow(children: getLinhaLegenda("100s - 120s", rgbs120s)));
+    rows.add(
+        pdfLib.TableRow(children: getLinhaLegenda("Errou", [176, 168, 111])));
+    rows.add(
+        pdfLib.TableRow(children: getLinhaLegenda("Não fez", [242, 219, 44])));
 
     return pdfLib.Table(
         border: const pdfLib.TableBorder(),
@@ -311,8 +315,8 @@ class _FinalizadaJogadaProfessorState
         child: pdfLib.Text(texto)));
     tableRow.add(pdfLib.Container(
         alignment: pdfLib.Alignment.center,
-        height: 25,
-        width: 15,
+        height: 35,
+        width: 25,
         color: tex.PdfColor(color[0] / 255, color[1] / 255, color[2] / 255)));
     return tableRow;
   }
