@@ -13,12 +13,13 @@ import 'package:quantocusta/model/aluno.dart';
 class FinalizadaJogadaState extends StatefulWidget {
   @override
   _FinalizadaJogadaState createState() =>
-      _FinalizadaJogadaState(this.aluno, this.sala);
+      _FinalizadaJogadaState(this.aluno, this.sala, this.texto);
 
   Aluno aluno;
   Classroom sala;
+  String texto;
 
-  FinalizadaJogadaState(this.aluno, this.sala);
+  FinalizadaJogadaState(this.aluno, this.sala, this.texto);
 }
 
 class _FinalizadaJogadaState extends State<FinalizadaJogadaState> {
@@ -26,8 +27,9 @@ class _FinalizadaJogadaState extends State<FinalizadaJogadaState> {
 
   Aluno aluno;
   Classroom sala;
+  String texto;
 
-  _FinalizadaJogadaState(this.aluno, this.sala);
+  _FinalizadaJogadaState(this.aluno, this.sala, this.texto);
 
   @override
   void initState() {
@@ -42,7 +44,7 @@ class _FinalizadaJogadaState extends State<FinalizadaJogadaState> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Parabéns!",
+            "Final de jogo!",
             style: TextStyle(
               fontSize: 24.0,
             ),
@@ -61,19 +63,14 @@ class _FinalizadaJogadaState extends State<FinalizadaJogadaState> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Stack(children: <Widget>[
-                          Text(
-                              'Parabéns ' +
-                                  this.aluno.nome +
-                                  "! Você chegou até o final! Aguarde informações do(a) professor(a)",
-                              style: TextStyle(
-                                fontSize: 30,
-                                foreground: Paint()
-                                  ..style = PaintingStyle.stroke
-                                  ..strokeWidth = 6
-                                  ..color = Colors.blue[700],
-                              ))
-                        ])
+                        Text(
+                            'Final de Jogo ' +
+                                this.aluno.nome +
+                                '! ' +
+                                this.texto,
+                            style: TextStyle(
+                              fontSize: 30,
+                            ))
                       ]))
             ]),
           ),

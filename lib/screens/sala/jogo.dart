@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quantocusta/model/classroom.dart';
 import 'package:quantocusta/model/aluno.dart';
+import 'package:quantocusta/model/enums.dart';
 
 import 'finalizadaJogadaProfessor.dart';
 
 class SalaJogoProfessor extends StatefulWidget {
   @override
-  _SalaJogoProfessorState createState() => _SalaJogoProfessorState(this._classroom);
+  _SalaJogoProfessorState createState() =>
+      _SalaJogoProfessorState(this._classroom);
 
   final Classroom _classroom;
 
@@ -35,32 +37,7 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
     return data;
   }
 
-  /*Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-    );
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final record = Aluno.fromDocument(data);
-
-    return Padding(
-      key: ValueKey(record.nome),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: ListTile(
-          title: Text(record.nome),
-          trailing: Text(record.pontuacao.toString()),
-          onTap: () => print(record),
-        ),
-      ),
-    );
-  }*/
+  bool isPausado = false;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +56,7 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
       body: Center(
         child: Column(
           children: <Widget>[
-            Text(widget._classroom.idSala.toString()),
+            Text(widget._classroom.idSala.toString() + (this.isPausado ? " - pausado" : " - em andamento")),
             StreamBuilder<QuerySnapshot>(
               stream: db
                   .collection("salas")
@@ -92,18 +69,50 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
 //                return _buildList(context, snapshot.data.documents);
                 return Flexible(
                     child: new ListView(
-                  children:
+                      children:
                       snapshot.data.documents.map((DocumentSnapshot document) {
-                    return ListTile(
-                      title: Text(document['nome']),
-                      subtitle: Text('Acertos: ' +
-                          document['quantidadeAcertos'].toString() +
-                          ', Erros: ' +
-                          document['quantidadeErros'].toString()),
-                    );
-                  }).toList(),
-                ));
+                        return ListTile(
+                          title: Text(document['nome']),
+                          subtitle: Text('Acertos: ' +
+                              document['quantidadeAcertos'].toString() +
+                              ', Erros: ' +
+                              document['quantidadeErros'].toString()),
+                        );
+                      }).toList(),
+                    ));
               },
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(12, 2, 12, 12),
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                color: Colors.blue,
+                textColor: Colors.white,
+                child: Text(
+                  isPausado ? "Retomar" : "Pausar",
+                  style: TextStyle(fontSize: 20),
+                ),
+                padding: EdgeInsets.all(12),
+                onPressed: () {
+                  Status status;
+                  if (this.isPausado) {
+                    status = Status.EM_ANDAMENTO;
+                  } else {
+                    status = Status.PAUSADO;
+                  }
+
+                  setState(() {
+                    this.isPausado = !this.isPausado;
+                  });
+
+                  db.collection('salas').document(this.sala.documentId)
+                      .updateData({ 'status': status.toString()}).then((value) {
+                    print("atualizou status: " + status.toString());
+                  });
+                },
+              ),
             ),
             RaisedButton(
               shape: RoundedRectangleBorder(
@@ -117,9 +126,12 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
               ),
               padding: EdgeInsets.all(12),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return FinalizadaJogadaProfessorState(this.sala);
-                }));
+                db.collection('salas').document(this.sala.documentId)
+                    .updateData({ 'status': Status.FINALIZADO.toString()}).then((value) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return FinalizadaJogadaProfessorState(this.sala);
+                  }));
+                });
               },
             )
           ],

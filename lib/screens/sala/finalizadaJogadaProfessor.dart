@@ -40,6 +40,12 @@ class _FinalizadaJogadaProfessorState
     super.initState();
   }
 
+  List<num> rgbs30s = [2, 201, 19];
+  List<num> rgbs60s = [48, 252, 65];
+  List<num> rgbs80s = [89, 255, 103];
+  List<num> rgbs100s = [125, 250, 135];
+  List<num> rgbs120s = [175, 250, 181];
+
   @override
   Widget build(BuildContext contextBuild) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -85,8 +91,12 @@ class _FinalizadaJogadaProfessorState
                                   print("saved on " + fileCreated.path);
 
                                   final MailOptions mailOptions = MailOptions(
-                                      body:'Segue em anexo o resultado da sala ' + this.sala.idSala.toString(),
-                                      subject: 'Quantocu\$ta - Resultado da sala ' + this.sala.idSala.toString(),
+                                      body:
+                                          'Segue em anexo o resultado da sala ' +
+                                              this.sala.idSala.toString(),
+                                      subject:
+                                          'Quantocu\$ta - Resultado da sala ' +
+                                              this.sala.idSala.toString(),
                                       recipients: ['nicolasjcviana@gmail.com'],
                                       isHTML: true,
                                       attachments: [fileCreated.path]);
@@ -178,33 +188,42 @@ class _FinalizadaJogadaProfessorState
                 alignment: pdfLib.Alignment.center,
                 height: 25,
                 width: 15,
-                color: tex.PdfColor(1, 0.53, 0)));
+                color: tex.PdfColor(242 / 255, 219 / 255, 44 / 255)));
+            // não achou 242, 219, 44
           } else {
             if (produtoAluno.acertou) {
               // o mais estourado do tempo é 2 minutos = 120s
-              // o maior vermelho é 94
-              // o maior verde é 144
-              // 94 = 120
-              // x =  55
 
               num segundos = produtoAluno.segundosDemorados < 120
                   ? produtoAluno.segundosDemorados
                   : 120;
 
-              num r = ((segundos * 26) / 120) / 100;
-              num g = ((segundos * 255) / 120) / 100;
-              num b = 0.0;
+              List<num> color;
+
+              if (segundos >= 0 && segundos <= 30) {
+                color = rgbs30s;
+              } else if (segundos >= 31 && segundos <= 60) {
+                color = rgbs60s;
+              } else if (segundos >= 61 && segundos <= 80) {
+                color = rgbs80s;
+              } else if (segundos >= 81 && segundos <= 100) {
+                color = rgbs100s;
+              } else {
+                color = rgbs120s;
+              }
               tableRow.add(pdfLib.Container(
                   alignment: pdfLib.Alignment.center,
                   height: 25,
                   width: 15,
-                  color: tex.PdfColor(r, g, b)));
+                  color: tex.PdfColor(
+                      color[0] / 255, color[1] / 255, color[2] / 255)));
             } else {
               tableRow.add(pdfLib.Container(
                   alignment: pdfLib.Alignment.center,
                   height: 25,
                   width: 15,
-                  color: tex.PdfColor(1, 0.92, 0))); // amarelo
+                  color: tex.PdfColor(176 / 255, 168 / 255, 111 / 255)));
+              // 176, 168, 111 errou
             }
           }
         }
@@ -243,7 +262,12 @@ class _FinalizadaJogadaProfessorState
                 textAlign: pdfLib.TextAlign.center,
                 style: pdfLib.TextStyle(
                     fontWeight: pdfLib.FontWeight.bold, fontSize: 16))),
-        createTable(context, alunos, pdf)
+        pdfLib.Container(
+            child: createTable(context, alunos, pdf),
+            alignment: pdfLib.Alignment.center),
+        pdfLib.Container(
+            child: criarLegenda(context),
+            alignment: pdfLib.Alignment.bottomLeft)
       ];
 
   Future<bool> carregarImagens() async {
@@ -251,5 +275,45 @@ class _FinalizadaJogadaProfessorState
 //      p.imagemA = await networkImageToByte(p.imagem);
 //    }
     return true;
+  }
+
+  pdfLib.Table criarLegenda(pdfLib.Context context) {
+    final List<pdfLib.TableRow> rows = <pdfLib.TableRow>[];
+
+    final List<pdfLib.Widget> tableRow = <pdfLib.Widget>[];
+    tableRow.add(pdfLib.Container(
+        alignment: pdfLib.Alignment.center,
+        width: 100,
+        height: 35,
+        child: pdfLib.Text("Legenda")));
+
+    rows.add(pdfLib.TableRow(children: tableRow));
+    rows.add(pdfLib.TableRow(children: getLinhaLegenda("0s - 30s", rgbs30s)));
+    rows.add(pdfLib.TableRow(children: getLinhaLegenda("30s - 60s", rgbs60s)));
+    rows.add(pdfLib.TableRow(children: getLinhaLegenda("60s - 80s", rgbs80s)));
+    rows.add(
+        pdfLib.TableRow(children: getLinhaLegenda("80s - 100s", rgbs100s)));
+    rows.add(
+        pdfLib.TableRow(children: getLinhaLegenda("100s - 120s", rgbs120s)));
+
+    return pdfLib.Table(
+        border: const pdfLib.TableBorder(),
+        tableWidth: pdfLib.TableWidth.min,
+        children: rows);
+  }
+
+  getLinhaLegenda(String texto, List<num> color) {
+    final List<pdfLib.Widget> tableRow = <pdfLib.Widget>[];
+    tableRow.add(pdfLib.Container(
+        alignment: pdfLib.Alignment.center,
+        width: 75,
+        height: 35,
+        child: pdfLib.Text(texto)));
+    tableRow.add(pdfLib.Container(
+        alignment: pdfLib.Alignment.center,
+        height: 25,
+        width: 15,
+        color: tex.PdfColor(color[0] / 255, color[1] / 255, color[2] / 255)));
+    return tableRow;
   }
 }

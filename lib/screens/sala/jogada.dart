@@ -60,6 +60,7 @@ class _JogadaState extends State<JogadaState> {
   void iniciar() async {
     this.produtos = this.sala.produtos;
     setState(() => produtoAtual = this.produtos.elementAt(0));
+    ouvirPausaJogo();
     new Timer(Duration(seconds: 3), () {
       this.lastStart = DateTime.now();
     });
@@ -198,7 +199,7 @@ class _JogadaState extends State<JogadaState> {
       });
     } else {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return FinalizadaJogadaState(this.aluno, this.sala);
+        return FinalizadaJogadaState(this.aluno, this.sala, "Você completou todo o jogo, parabéns!");
       }));
     }
   }
@@ -491,4 +492,38 @@ class _JogadaState extends State<JogadaState> {
       ),
     );
   }
+
+  void ouvirPausaJogo() {
+    this.db.collection("salas").document(this.sala.documentId)
+        .snapshots()
+        .listen((sala) {
+          Status status = Status.values.firstWhere((o) => o.toString() == sala.data['status']);
+          if (status == Status.PAUSADO) {
+            mostrarDialog();
+          } else if (status == Status.EM_ANDAMENTO) {
+            Navigator.of(context).pop();
+            this.lastStart = DateTime.now();
+          } else if (status == Status.FINALIZADO) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return FinalizadaJogadaState(this.aluno, this.sala, "O professor(a) finalizou o jogo.");
+            }));
+          }
+    });
+  }
+
+  void mostrarDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Jogo pausado, aguarde!'),
+          content: SingleChildScrollView(
+            child: CircularProgressIndicator()
+          ),
+        );
+      },
+    );
+  }
+
 }
