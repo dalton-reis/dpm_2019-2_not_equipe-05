@@ -45,7 +45,7 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
     });
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget._classroom.nomeSala),
+        title: Text('${widget._classroom.nomeSala}  -  ${widget._classroom.idSala}'),
         centerTitle: true,
         leading: Container(),
       ),
