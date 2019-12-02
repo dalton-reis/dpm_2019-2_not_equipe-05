@@ -18,6 +18,7 @@ class _SalaCriacaoState extends State<SalaCriacao> {
   final db = Firestore.instance;
   final produtoService = new ProdutoService();
   final TextEditingController _controllerTeacher = TextEditingController();
+  final TextEditingController _controllerSala = TextEditingController();
 
   Dificulty valueDificulty = Dificulty.FACIL;
   final TextEditingController _controllerProductQuantity =
@@ -91,6 +92,7 @@ class _SalaCriacaoState extends State<SalaCriacao> {
         'quantidadeProdutos': quantidadeProdutos,
         'quantidadeInteiro': quantidadeInteiro,
         'quantidadeDecimal': quantidadeDecimal,
+        'nomeSala': _controllerSala.value.text.toString(),
         'nomeProfessor': _controllerTeacher.value.text.toString(),
         'status': Status.AGUARDANDO.toString(),
       }).then((documentAdded) {
@@ -121,164 +123,228 @@ class _SalaCriacaoState extends State<SalaCriacao> {
         ),
         body: Container(
             color: Colors.green,
-            child: Center(
-                child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
+            child: SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
                   Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-                      child: TextField(
-                        controller: _controllerTeacher,
-                        style: TextStyle(
-                          fontSize: 22.0,
-                          color: Colors.white,
-                        ),
-                        decoration: InputDecoration(
-                          // prefixIcon: Icon(Icons.person),
-                          hintText: "Insira seu nome",
-                          hintStyle:
-                              TextStyle(fontSize: 18.0, color: Colors.white),
-                          labelText: "Professor",
-                          errorStyle: TextStyle(fontSize: 18),
-                          labelStyle:
-                              TextStyle(fontSize: 22.0, color: Colors.white),
-                          contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: _controllerTeacher.text.isEmpty
-                                  ? Colors.white60
-                                  : Colors.lightGreenAccent,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.lightGreenAccent,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                        ),
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-                      child: TextField(
-                        controller: _controllerProductQuantity,
-                        keyboardType: TextInputType.number,
-                        style: TextStyle(
-                          fontSize: 22.0,
-                          color: Colors.white,
-                        ),
-                        decoration: InputDecoration(
-                          // prefixIcon: Icon(Icons.person),
-                          hintText: "Insira a quantidade de produtos",
-                          hintStyle:
-                              TextStyle(fontSize: 18.0, color: Colors.white),
-                          labelText: "Quantidade de produtos",
-                          errorStyle: TextStyle(fontSize: 18),
-                          labelStyle:
-                              TextStyle(fontSize: 22.0, color: Colors.white),
-                          contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: _controllerTeacher.text.isEmpty
-                                  ? Colors.white60
-                                  : Colors.lightGreenAccent,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.lightGreenAccent,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                              style: BorderStyle.solid,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Image(
+                      image: AssetImage('assets/imagens/logo1.png'),
+                      height: MediaQuery.of(context).size.height * 0.2,
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-                    child: DropdownButton<Dificulty>(
+                    child: TextField(
+                      controller: _controllerTeacher,
                       style: TextStyle(
                         fontSize: 22.0,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
-                      value: valueDificulty,
-                      isExpanded: true,
-                      onChanged: (Dificulty newValue) {
-                        setState(() {
-                          valueDificulty = newValue;
-                        });
-                      },
-                      items: Dificulty.values.map((Dificulty dificulty) {
-                        return DropdownMenuItem<Dificulty>(
-                          value: dificulty,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(
-                                showIconDificulty(dificulty),
-                                color: Colors.black,
-                              ),
-                              Text(
-                                showDificulty(dificulty),
-                                style: TextStyle(
-                                  fontSize: 22.0,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
+                      decoration: InputDecoration(
+                        // prefixIcon: Icon(Icons.person),
+                        hintText: "Insira seu nome",
+                        hintStyle:
+                            TextStyle(fontSize: 18.0, color: Colors.white),
+                        labelText: "Professor",
+                        errorStyle: TextStyle(fontSize: 18),
+                        labelStyle:
+                            TextStyle(fontSize: 22.0, color: Colors.white),
+                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: _controllerTeacher.text.isEmpty
+                                ? Colors.white60
+                                : Colors.lightGreenAccent,
+                            width: 1.5,
+                            style: BorderStyle.solid,
                           ),
-                        );
-                      }).toList(),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightGreenAccent,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                    child: TextField(
+                      controller: _controllerProductQuantity,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(
+                        fontSize: 22.0,
+                        color: Colors.white,
+                      ),
+                      decoration: InputDecoration(
+                        // prefixIcon: Icon(Icons.person),
+                        hintText: "Insira a quantidade de produtos",
+                        hintStyle:
+                            TextStyle(fontSize: 18.0, color: Colors.white),
+                        labelText: "Quantidade de produtos",
+                        errorStyle: TextStyle(fontSize: 18),
+                        labelStyle:
+                            TextStyle(fontSize: 22.0, color: Colors.white),
+                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: _controllerTeacher.text.isEmpty
+                                ? Colors.white60
+                                : Colors.lightGreenAccent,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightGreenAccent,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                    child: TextField(
+                      controller: _controllerSala,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(
+                        fontSize: 22.0,
+                        color: Colors.white,
+                      ),
+                      decoration: InputDecoration(
+                        // prefixIcon: Icon(Icons.person),
+                        hintText: "Insira o nome da sala",
+                        hintStyle:
+                            TextStyle(fontSize: 18.0, color: Colors.white),
+                        labelText: "Sala",
+                        errorStyle: TextStyle(fontSize: 18),
+                        labelStyle:
+                            TextStyle(fontSize: 22.0, color: Colors.white),
+                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: _controllerTeacher.text.isEmpty
+                                ? Colors.white60
+                                : Colors.lightGreenAccent,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightGreenAccent,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.lightGreenAccent),
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: DropdownButton<Dificulty>(
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.white,
+                          // backgroundColor: Colors.black
+                        ),
+                        value: valueDificulty,
+                        isExpanded: true,
+                        onChanged: (Dificulty newValue) {
+                          setState(() {
+                            valueDificulty = newValue;
+                          });
+                        },
+                        items: Dificulty.values.map((Dificulty dificulty) {
+                          return DropdownMenuItem<Dificulty>(
+                            value: dificulty,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Icon(
+                                  showIconDificulty(dificulty),
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  showDificulty(dificulty),
+                                  style: TextStyle(
+                                    fontSize: 22.0,
+                                    // color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                   Padding(
@@ -304,6 +370,6 @@ class _SalaCriacaoState extends State<SalaCriacao> {
                       },
                     ),
                   ),
-                ])))));
+                ]))));
   }
 }

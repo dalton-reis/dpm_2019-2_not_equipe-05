@@ -13,6 +13,7 @@ class QuantoCusta extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue,
           accentColor: Colors.white,
+          canvasColor: Colors.green,
           buttonTheme: ButtonThemeData(
             buttonColor: Colors.lightBlueAccent,
             textTheme: ButtonTextTheme.accent,

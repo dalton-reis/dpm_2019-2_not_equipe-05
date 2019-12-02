@@ -51,9 +51,11 @@ class _LoginComPinState extends State<LoginComPin> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                // Image(
-                //   image: AssetImage('assets/logo1.png'),
-                // ),
+                Image(
+                  image: AssetImage('assets/imagens/logo1.png'),
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  // width: MediaQuery.of(context).size.width * 0.7,
+                ),
                 PinCodeTextField(
                   autofocus: true,
                   controller: pinController,

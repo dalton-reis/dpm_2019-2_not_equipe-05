@@ -37,6 +37,7 @@ class _JogadaState extends State<JogadaState> {
   List<Produto> produtos;
   List<Produto> produtosUtilizados = [];
   List<Dinheiro> dinheirosSelecionados = [];
+  List<String> mensagensErrou = ['Quem sabe da próxima vez..', 'Continue tentando!', 'Continue trabalhando nisso.', 'Quase, a próxima você consegue!', 'Foi por pouco.'];
   num totalSelecionado = 0;
   Produto produtoAtual;
   DateTime lastStart;
@@ -102,8 +103,9 @@ class _JogadaState extends State<JogadaState> {
       this.aluno.quantidadeAcertos = this.aluno.quantidadeAcertos + 1;
       acertou = true;
     } else {
+      int index = Random().nextInt(mensagensErrou.length-1);
       this.aluno.quantidadeErros = this.aluno.quantidadeErros + 1;
-      mensagem = 'Na próxima você consegue!';
+      mensagem = mensagensErrou[index];
       acertou = false;
     }
 
@@ -111,7 +113,7 @@ class _JogadaState extends State<JogadaState> {
       padding: EdgeInsets.all(10),
       duration: Duration(seconds: 3),
       borderRadius: 8,
-      backgroundColor: acertou ? Colors.lightGreen : Colors.redAccent.shade700,
+      backgroundColor: acertou ? Colors.lightGreen : Colors.red[400],
       boxShadows: [
         BoxShadow(
           color: Colors.black45,
@@ -124,8 +126,17 @@ class _JogadaState extends State<JogadaState> {
       dismissDirection: FlushbarDismissDirection.HORIZONTAL,
       // The default curve is Curves.easeOut
       forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
-      title: acertou ? "Resposta correta" : "Valor incorreto",
-      message: mensagem,
+      // title: acertou ? "Resposta correta" : "Valor incorreto",
+      // title: mensagem,
+      // icon: Icon(Icons.),
+      messageText: Text(
+        mensagem,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontSize: 20,
+        ),
+      ),
     )..show(context);
 
     // final snackBar = SnackBar(
@@ -441,6 +452,17 @@ class _JogadaState extends State<JogadaState> {
                       decoration: BoxDecoration(
                         color: Colors.cyan,
                         borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 20.0, // has the effect of softening the shadow
+                            spreadRadius: 1.0, // has the effect of extending the shadow
+                            offset: Offset(
+                              2.0, // horizontal, move right 10
+                              2.0, // vertical, move down 10
+                            ),
+                          )
+                        ]
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

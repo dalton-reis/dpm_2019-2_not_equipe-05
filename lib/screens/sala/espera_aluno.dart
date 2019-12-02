@@ -161,7 +161,8 @@ class _SalaEsperaAlunoState extends State<SalaEsperaAluno> {
                         return LinearProgressIndicator();
 
                       return ListView(
-                        children: alunosSnapshot.data.documents.map((alunoSnapshot){
+                        children:
+                            alunosSnapshot.data.documents.map((alunoSnapshot) {
                           Aluno aluno = Aluno.fromDocument(alunoSnapshot);
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(16, 5, 16, 5),

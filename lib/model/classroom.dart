@@ -11,6 +11,7 @@ class Classroom {
   int _quantidadeProdutos;
   int _quantidadeInteiro;
   int _quantidadeDecimal;
+  String _nomeSala;
 
   Dificulty _dificuldade;
   Status _status;
@@ -18,7 +19,7 @@ class Classroom {
 
 
   Classroom(this._documentId, this._idSala, this._nomeProfessor,
-      this._qntJogadores, this._dificuldade, this._status);
+      this._qntJogadores, this._dificuldade, this._status,this._nomeSala);
 
   Classroom.fromDocument(DocumentSnapshot documentSnapshot) {
     Dificulty dif = Dificulty.values.firstWhere((o) => o.toString() == documentSnapshot.data['dificuldade']);
@@ -30,6 +31,7 @@ class Classroom {
     this._quantidadeDecimal = documentSnapshot.data['quantidadeDecimal'];
     this._quantidadeInteiro = documentSnapshot.data['quantidadeInteiro'];
     this._quantidadeProdutos = documentSnapshot.data['quantidadeProdutos'];
+    this._nomeSala = documentSnapshot.data['nomeSala'];
     this._dificuldade = dif;
     this._status = status;
   }
@@ -51,6 +53,8 @@ class Classroom {
   int get quantidadeInteiro => _quantidadeInteiro;
 
   int get idSala => _idSala;
+
+  String get nomeSala => _nomeSala;
 
 
 }
