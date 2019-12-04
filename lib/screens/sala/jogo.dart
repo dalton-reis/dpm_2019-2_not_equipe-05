@@ -51,12 +51,18 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
     });
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sala'),
+        title: Text('${widget._classroom.nomeSala}  -  ${widget._classroom.idSala}'),
+        centerTitle: true,
+        leading: Container(),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            Text(widget._classroom.idSala.toString() + (this.isPausado ? " - pausado" : " - em andamento")),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                  (this.isPausado ? "Pausado" : "Em andamento"),style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+            ),
             StreamBuilder<QuerySnapshot>(
               stream: db
                   .collection("salas")
@@ -69,17 +75,34 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
 //                return _buildList(context, snapshot.data.documents);
                 return Flexible(
                     child: new ListView(
-                      children:
+                  children:
                       snapshot.data.documents.map((DocumentSnapshot document) {
-                        return ListTile(
-                          title: Text(document['nome']),
-                          subtitle: Text('Acertos: ' +
-                              document['quantidadeAcertos'].toString() +
-                              ', Erros: ' +
-                              document['quantidadeErros'].toString()),
-                        );
-                      }).toList(),
-                    ));
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 5, 16, 5),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            document['nome'],
+                            style: TextStyle(fontSize: 22),
+                          ),
+                          subtitle: Text(
+                            'Acertos: ' +
+                                document['quantidadeAcertos'].toString() +
+                                ', Erros: ' +
+                                document['quantidadeErros'].toString(),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ));
               },
             ),
             Padding(
@@ -107,32 +130,40 @@ class _SalaJogoProfessorState extends State<SalaJogoProfessor> {
                     this.isPausado = !this.isPausado;
                   });
 
-                  db.collection('salas').document(this.sala.documentId)
-                      .updateData({ 'status': status.toString()}).then((value) {
+                  db
+                      .collection('salas')
+                      .document(this.sala.documentId)
+                      .updateData({'status': status.toString()}).then((value) {
                     print("atualizou status: " + status.toString());
                   });
                 },
               ),
             ),
-            RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                color: Colors.blue,
+                textColor: Colors.white,
+                child: Text(
+                  "Finalizar jogada",
+                  style: TextStyle(fontSize: 20),
+                ),
+                padding: EdgeInsets.all(12),
+                onPressed: () {
+                  db
+                      .collection('salas')
+                      .document(this.sala.documentId)
+                      .updateData({'status': Status.FINALIZADO.toString()}).then(
+                          (value) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return FinalizadaJogadaProfessorState(this.sala);
+                    }));
+                  });
+                },
               ),
-              color: Colors.blue,
-              textColor: Colors.white,
-              child: Text(
-                "Finalizar jogada",
-                style: TextStyle(fontSize: 20),
-              ),
-              padding: EdgeInsets.all(12),
-              onPressed: () {
-                db.collection('salas').document(this.sala.documentId)
-                    .updateData({ 'status': Status.FINALIZADO.toString()}).then((value) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return FinalizadaJogadaProfessorState(this.sala);
-                  }));
-                });
-              },
             )
           ],
         ),

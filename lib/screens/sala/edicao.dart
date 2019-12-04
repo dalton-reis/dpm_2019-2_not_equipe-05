@@ -221,9 +221,9 @@ class _SalaEdicaoProfessorState extends State<SalaEdicaoProfessor> {
                     'status': Status.INICIADO.toString()
                   };
                   salaDocument.updateData(data);
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return SalaJogoProfessor(this.classroom);
-                  // }));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return SalaJogoProfessor(this.classroom);
+                  }));
                 }
               ),
            ),
