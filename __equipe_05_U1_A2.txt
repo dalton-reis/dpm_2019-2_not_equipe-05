@@ -1,0 +1,21 @@
+Trabalho Unidade 1: Unidade 1: A2: Escolha três aplicativos
+
+Equipe 05
+Cleber Tomazoni / Gabriel Deggau Schmidt / Nicolas José Cordeiro Viana / Pedro Luís Eccel
+Myoeno
+Equipe do APP do vinho com sensor externo
+Vivino
+Sensor externo que capta características do vinho
+275,00 (59,00 euros)
+Conexão Bluetooth
+Uso de imagem (triângulo) … deve ser os pilares da qualidade do vinho
+Tem nas duas lojas: PlayStore/Apple
+Audible
+Biblioteca de audio books
+Persistência off-line (preocupação: espaço .. não, direitos autorais DDRM)
+Opção de tela de para carro (Android Auto, iCar): ainda engatinhando.
+Exemplo de funcionalidades do Podcast: remover “lixo” …
+Deve ter nas duas lojas.
+Expedições
+Da Google: expedições .. exemplo do JustLine do ArCore (Google) -> precisa parear por proximidade.
+Pokemon.
